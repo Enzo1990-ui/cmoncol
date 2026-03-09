@@ -1,0 +1,38 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "WBL",
+    "PEP",
+    "bSa"
+  ],
+  "key": {
+    "W": {
+      "item": "cobblemon:power_weight"
+    },
+    "B": {
+      "item": "cobblemon:power_bracer"
+    },
+    "L": {
+      "item": "cobblemon:power_lens"
+    },
+    "b": {
+      "item": "cobblemon:power_belt"
+    },
+    "S": {
+      "item": "cobblemon:power_band"
+    },
+    "a": {
+      "item": "cobblemon:power_anklet"
+    },
+    "P": {
+      "item": "minecraft:polished_blackstone"
+    },
+    "E": {
+      "item": "structurize:sceptergold"
+    }
+  },
+  "result": {
+    "id": "cmoncol:colony_traineracadamy",
+    "count": 1
+  }
+}

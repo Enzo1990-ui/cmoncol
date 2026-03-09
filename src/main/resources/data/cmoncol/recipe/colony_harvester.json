@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "HHH",
+    "ISI",
+    "DDD"
+  ],
+  "key": {
+    "H": { "item": "minecraft:hay_block" },
+    "I": { "item": "minecraft:iron_hoe" },
+    "S": { "item": "structurize:sceptergold" },
+    "D": { "item": "minecraft:dirt" }
+  },
+  "result": {
+    "id": "cmoncol:colony_harvester"
+  }
+}

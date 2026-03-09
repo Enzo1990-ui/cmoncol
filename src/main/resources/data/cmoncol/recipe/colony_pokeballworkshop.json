@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "III",
+    "RSR",
+    "BBB"
+  ],
+  "key": {
+    "I": { "item": "minecraft:iron_ingot" },
+    "R": { "item": "minecraft:redstone" },
+    "S": { "item": "structurize:sceptergold" },
+    "B": { "item": "minecraft:smooth_stone" }
+  },
+  "result": {
+    "id": "cmoncol:colony_pokeballworkshop"
+  }
+}

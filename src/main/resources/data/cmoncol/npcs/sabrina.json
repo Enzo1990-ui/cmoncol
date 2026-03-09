@@ -1,0 +1,7 @@
+{
+  "names": ["Gym Leader Sabrina"], "hitbox": "player", "resourceIdentifier": "cmoncol:sabrina",
+  "party": { "type": "simple", "pokemon": ["kadabra level=38", "mrmime level=37", "alakazam level=43"] },
+  "battleConfiguration": { "canChallenge": true },
+  "interaction": { "type": "dialogue", "dialogue": "cmoncol:sabrina_dialogue" },
+  "ai": [ { "type": "apply_behaviours", "behaviours": [ "cobblemon:core" ] } ]
+}

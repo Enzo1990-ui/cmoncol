@@ -1,0 +1,7 @@
+package com.ogtenzohd.cmoncol.colony.buildings.modules;
+
+import com.minecolonies.api.colony.buildings.modules.AbstractBuildingModule;
+
+public class DaycareProxyModule extends AbstractBuildingModule {
+    public DaycareProxyModule() { super(); }
+}

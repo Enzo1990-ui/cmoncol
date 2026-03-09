@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/ldtteam/BlockUI/version/main/src/main/resources/assets/blockui/gui/block_ui.xsd"
+        size="190 244"
+        lightbox="true">
+    
+    <layout source="minecolonies:gui/layouthuts/layouthutpageactions.xml"/>
+    <image source="minecolonies:textures/gui/builderhut/builder_paper.png" size="190 244" pos="0 0"/>
+
+    <text id="title" size="190 12" pos="45 15" color="black" label="Pasture Grazing List"/>
+
+    <text id="slotLabel0" size="80 10" pos="15 35" color="black" label="Empty"/>
+    <button id="toggleBtn0" size="55 12" pos="95 34" label="Mode" source="minecolonies:textures/gui/builderhut/builder_button_small.png" color="black"/>
+    <button id="withdrawBtn0" size="25 12" pos="155 34" label="Get" source="minecolonies:textures/gui/builderhut/builder_button_small.png" color="black"/>
+
+    <text id="slotLabel1" size="80 10" pos="15 49" color="black" label="Empty"/>
+    <button id="toggleBtn1" size="55 12" pos="95 48" label="Mode" source="minecolonies:textures/gui/builderhut/builder_button_small.png" color="black"/>
+    <button id="withdrawBtn1" size="25 12" pos="155 48" label="Get" source="minecolonies:textures/gui/builderhut/builder_button_small.png" color="black"/>
+
+    <text id="slotLabel2" size="80 10" pos="15 63" color="black" label="Empty"/>
+    <button id="toggleBtn2" size="55 12" pos="95 62" label="Mode" source="minecolonies:textures/gui/builderhut/builder_button_small.png" color="black"/>
+    <button id="withdrawBtn2" size="25 12" pos="155 62" label="Get" source="minecolonies:textures/gui/builderhut/builder_button_small.png" color="black"/>
+
+    <text id="slotLabel3" size="80 10" pos="15 77" color="black" label="Empty"/>
+    <button id="toggleBtn3" size="55 12" pos="95 76" label="Mode" source="minecolonies:textures/gui/builderhut/builder_button_small.png" color="black"/>
+    <button id="withdrawBtn3" size="25 12" pos="155 76" label="Get" source="minecolonies:textures/gui/builderhut/builder_button_small.png" color="black"/>
+
+    <text id="slotLabel4" size="80 10" pos="15 91" color="black" label="Empty"/>
+    <button id="toggleBtn4" size="55 12" pos="95 90" label="Mode" source="minecolonies:textures/gui/builderhut/builder_button_small.png" color="black"/>
+    <button id="withdrawBtn4" size="25 12" pos="155 90" label="Get" source="minecolonies:textures/gui/builderhut/builder_button_small.png" color="black"/>
+
+    <text id="slotLabel5" size="80 10" pos="15 105" color="black" label="Empty"/>
+    <button id="toggleBtn5" size="55 12" pos="95 104" label="Mode" source="minecolonies:textures/gui/builderhut/builder_button_small.png" color="black"/>
+    <button id="withdrawBtn5" size="25 12" pos="155 104" label="Get" source="minecolonies:textures/gui/builderhut/builder_button_small.png" color="black"/>
+
+    <text id="slotLabel6" size="80 10" pos="15 119" color="black" label="Empty"/>
+    <button id="toggleBtn6" size="55 12" pos="95 118" label="Mode" source="minecolonies:textures/gui/builderhut/builder_button_small.png" color="black"/>
+    <button id="withdrawBtn6" size="25 12" pos="155 118" label="Get" source="minecolonies:textures/gui/builderhut/builder_button_small.png" color="black"/>
+
+    <text id="slotLabel7" size="80 10" pos="15 133" color="black" label="Empty"/>
+    <button id="toggleBtn7" size="55 12" pos="95 132" label="Mode" source="minecolonies:textures/gui/builderhut/builder_button_small.png" color="black"/>
+    <button id="withdrawBtn7" size="25 12" pos="155 132" label="Get" source="minecolonies:textures/gui/builderhut/builder_button_small.png" color="black"/>
+
+    <text id="slotLabel8" size="80 10" pos="15 147" color="black" label="Empty"/>
+    <button id="toggleBtn8" size="55 12" pos="95 146" label="Mode" source="minecolonies:textures/gui/builderhut/builder_button_small.png" color="black"/>
+    <button id="withdrawBtn8" size="25 12" pos="155 146" label="Get" source="minecolonies:textures/gui/builderhut/builder_button_small.png" color="black"/>
+
+    <text id="slotLabel9" size="80 10" pos="15 161" color="black" label="Empty"/>
+    <button id="toggleBtn9" size="55 12" pos="95 160" label="Mode" source="minecolonies:textures/gui/builderhut/builder_button_small.png" color="black"/>
+    <button id="withdrawBtn9" size="25 12" pos="155 160" label="Get" source="minecolonies:textures/gui/builderhut/builder_button_small.png" color="black"/>
+
+    <button id="prevPartyBtn" size="20 20" pos="20 185" label="&lt;" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+    <text id="partySelectionLabel" size="100 10" pos="45 190" color="black" label="Slot 1: Empty"/>
+    <button id="nextPartyBtn" size="20 20" pos="150 185" label="&gt;" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+    
+    <button id="depositBtn" size="150 20" pos="20 210" label="Deposit Selected" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+</window>

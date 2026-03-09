@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "cmoncol:block/colony_traineracadamy" },
+    "facing=east":  { "model": "cmoncol:block/colony_traineracadamy", "y": 90 },
+    "facing=south": { "model": "cmoncol:block/colony_traineracadamy", "y": 180 },
+    "facing=west":  { "model": "cmoncol:block/colony_traineracadamy", "y": 270 }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "WWW",
+    "ESE",
+    "PPP"
+  ],
+  "key": {
+    "W": { "item": "minecraft:white_wool" },
+    "E": { "item": "minecraft:egg" },
+    "S": { "item": "structurize:sceptergold" },
+    "P": { "item": "minecraft:oak_planks" }
+  },
+  "result": {
+    "id": "cmoncol:colony_daycare"
+  }
+}

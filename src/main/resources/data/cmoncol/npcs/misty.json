@@ -1,0 +1,7 @@
+{
+  "names": ["Gym Leader Misty"], "hitbox": "player", "resourceIdentifier": "cmoncol:misty",
+  "party": { "type": "simple", "pokemon": ["staryu level=18", "starmie level=21"] },
+  "battleConfiguration": { "canChallenge": true },
+  "interaction": { "type": "dialogue", "dialogue": "cmoncol:misty_dialogue" },
+  "ai": [ { "type": "apply_behaviours", "behaviours": [ "cobblemon:core" ] } ]
+}

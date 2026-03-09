@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "cmoncol:block/colony_science_lab" },
+    "facing=east":  { "model": "cmoncol:block/colony_science_lab", "y": 90 },
+    "facing=south": { "model": "cmoncol:block/colony_science_lab", "y": 180 },
+    "facing=west":  { "model": "cmoncol:block/colony_science_lab", "y": 270 }
+  }
+}

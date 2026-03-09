@@ -1,0 +1,7 @@
+{
+  "names": ["Gym Leader Blaine"], "hitbox": "player", "resourceIdentifier": "cmoncol:blaine",
+  "party": { "type": "simple", "pokemon": ["growlithe level=42", "ponyta level=40", "arcanine level=47"] },
+  "battleConfiguration": { "canChallenge": true },
+  "interaction": { "type": "dialogue", "dialogue": "cmoncol:blaine_dialogue" },
+  "ai": [ { "type": "apply_behaviours", "behaviours": [ "cobblemon:core" ] } ]
+}

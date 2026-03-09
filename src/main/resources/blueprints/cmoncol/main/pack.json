@@ -1,0 +1,15 @@
+{
+    "icon": "icon.png",
+    "name": "Cobblemon Colonies",
+    "authors": [
+        "OGTEnzoHD"
+    ],
+    "desc": "...",
+    "mods": [
+        "structurize",
+        "minecolonies",
+        "cobblemon"
+    ],
+    "version": "1",
+    "pack-format": "1"
+}

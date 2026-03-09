@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "GGG",
+    "RSR",
+    "III"
+  ],
+  "key": {
+    "G": { "item": "minecraft:glass" },
+    "R": { "item": "minecraft:redstone" },
+    "S": { "item": "structurize:sceptergold" },
+    "I": { "item": "minecraft:iron_block" }
+  },
+  "result": {
+    "id": "cmoncol:colony_science_lab"
+  }
+}

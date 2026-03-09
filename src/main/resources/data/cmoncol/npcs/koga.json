@@ -1,0 +1,7 @@
+{
+  "names": ["Gym Leader Koga"], "hitbox": "player", "resourceIdentifier": "cmoncol:koga",
+  "party": { "type": "simple", "pokemon": ["koffing level=37", "muk level=39", "weezing level=43"] },
+  "battleConfiguration": { "canChallenge": true },
+  "interaction": { "type": "dialogue", "dialogue": "cmoncol:koga_dialogue" },
+  "ai": [ { "type": "apply_behaviours", "behaviours": [ "cobblemon:core" ] } ]
+}

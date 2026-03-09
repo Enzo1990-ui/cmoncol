@@ -1,0 +1,35 @@
+modLoader="javafml"
+loaderVersion="[1,)"
+license="MIT"
+issueTrackerURL="https://github.com/Enzo1990-ui/cmoncol/issues"
+
+[[mods]]
+modId="cmoncol"
+version="1.0.0"
+displayName="Cobblemon Colonies"
+logoFile=""
+authors="OGTEnzoHD"
+description='''
+A standalone MineColonies expansion for Cobblemon that introduces specialized professions and buildings.
+'''
+
+[[dependencies.cmoncol]]
+    modId="neoforge"
+    type="required"
+    versionRange="[21.1,)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.cmoncol]]
+    modId="minecolonies"
+    type="required"
+    versionRange="[1.1.1273,)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.cmoncol]]
+    modId="cobblemon"
+    type="required"
+    versionRange="[1.7.3,)"
+    ordering="NONE"
+    side="BOTH"

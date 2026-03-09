@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "cobblemon:blue_apricorn"
+    }
+  ],
+  "result": {
+    "id": "cobblemon:blue_apricorn_seed",
+    "count": 1
+  }
+}

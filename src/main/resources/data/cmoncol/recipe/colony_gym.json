@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "QQQ",
+    "DSD",
+    "OOO"
+  ],
+  "key": {
+    "Q": { "item": "minecraft:quartz_block" },
+    "D": { "item": "minecraft:diamond" },
+    "S": { "item": "structurize:sceptergold" },
+    "O": { "item": "minecraft:obsidian" }
+  },
+  "result": {
+    "id": "cmoncol:colony_gym"
+  }
+}

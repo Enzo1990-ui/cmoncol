@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "cmoncol:block/colony_pokeballworkshop" },
+    "facing=east":  { "model": "cmoncol:block/colony_pokeballworkshop", "y": 90 },
+    "facing=south": { "model": "cmoncol:block/colony_pokeballworkshop", "y": 180 },
+    "facing=west":  { "model": "cmoncol:block/colony_pokeballworkshop", "y": 270 }
+  }
+}

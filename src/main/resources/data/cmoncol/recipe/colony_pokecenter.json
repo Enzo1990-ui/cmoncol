@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "RRR",
+    "GSG",
+    "WWW"
+  ],
+  "key": {
+    "R": { "item": "minecraft:red_wool" },
+    "G": { "item": "minecraft:glass" },
+    "S": { "item": "structurize:sceptergold" },
+    "W": { "item": "minecraft:white_wool" }
+  },
+  "result": {
+    "id": "cmoncol:colony_pokecenter"
+  }
+}

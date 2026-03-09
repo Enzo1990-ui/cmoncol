@@ -1,0 +1,156 @@
+{
+	"format_version": "1.21.11",
+	"credit": "Generated Daycare Cash Register Model",
+	"ambientocclusion": true,
+	"textures": {
+		"0": "minecraft:block/birch_planks",
+		"1": "minecraft:block/stripped_birch_log",
+		"2": "minecraft:block/iron_block",
+		"3": "minecraft:block/stone",
+		"4": "minecraft:block/black_concrete",
+		"5": "minecraft:block/lime_concrete",
+		"particle": "minecraft:block/birch_planks"
+	},
+	"elements": [
+		{
+			"name": "TableTop",
+			"from": [0, 10, 0],
+			"to": [16, 12, 16],
+			"faces": {
+				"north": {"uv": [0, 4, 16, 6], "texture": "#0"},
+				"east": {"uv": [0, 4, 16, 6], "texture": "#0"},
+				"south": {"uv": [0, 4, 16, 6], "texture": "#0"},
+				"west": {"uv": [0, 4, 16, 6], "texture": "#0"},
+				"up": {"uv": [0, 0, 16, 16], "texture": "#0"},
+				"down": {"uv": [0, 0, 16, 16], "texture": "#0"}
+			}
+		},
+		{
+			"name": "Leg1",
+			"from": [1, 0, 1],
+			"to": [4, 10, 4],
+			"faces": {
+				"north": {"uv": [1, 6, 4, 16], "texture": "#1"},
+				"east": {"uv": [1, 6, 4, 16], "texture": "#1"},
+				"south": {"uv": [1, 6, 4, 16], "texture": "#1"},
+				"west": {"uv": [1, 6, 4, 16], "texture": "#1"}
+			}
+		},
+		{
+			"name": "Leg2",
+			"from": [12, 0, 1],
+			"to": [15, 10, 4],
+			"faces": {
+				"north": {"uv": [12, 6, 15, 16], "texture": "#1"},
+				"east": {"uv": [12, 6, 15, 16], "texture": "#1"},
+				"south": {"uv": [12, 6, 15, 16], "texture": "#1"},
+				"west": {"uv": [12, 6, 15, 16], "texture": "#1"}
+			}
+		},
+		{
+			"name": "Leg3",
+			"from": [1, 0, 12],
+			"to": [4, 10, 15],
+			"faces": {
+				"north": {"uv": [1, 6, 4, 16], "texture": "#1"},
+				"east": {"uv": [1, 6, 4, 16], "texture": "#1"},
+				"south": {"uv": [1, 6, 4, 16], "texture": "#1"},
+				"west": {"uv": [1, 6, 4, 16], "texture": "#1"}
+			}
+		},
+		{
+			"name": "Leg4",
+			"from": [12, 0, 12],
+			"to": [15, 10, 15],
+			"faces": {
+				"north": {"uv": [12, 6, 15, 16], "texture": "#1"},
+				"east": {"uv": [12, 6, 15, 16], "texture": "#1"},
+				"south": {"uv": [12, 6, 15, 16], "texture": "#1"},
+				"west": {"uv": [12, 6, 15, 16], "texture": "#1"}
+			}
+		},
+		{
+			"name": "CashDrawer",
+			"from": [3, 12, 5],
+			"to": [13, 14, 13],
+			"faces": {
+				"north": {"uv": [3, 14, 13, 16], "texture": "#2"},
+				"east": {"uv": [5, 14, 13, 16], "texture": "#2"},
+				"south": {"uv": [3, 14, 13, 16], "texture": "#2"},
+				"west": {"uv": [5, 14, 13, 16], "texture": "#2"},
+				"up": {"uv": [3, 5, 13, 13], "texture": "#2"}
+			}
+		},
+		{
+			"name": "RegisterBody",
+			"from": [4, 14, 8],
+			"to": [12, 18, 12],
+			"faces": {
+				"north": {"uv": [4, 12, 12, 16], "texture": "#2"},
+				"east": {"uv": [8, 12, 12, 16], "texture": "#2"},
+				"south": {"uv": [4, 12, 12, 16], "texture": "#2"},
+				"west": {"uv": [8, 12, 12, 16], "texture": "#2"},
+				"up": {"uv": [4, 8, 12, 12], "texture": "#2"}
+			}
+		},
+		{
+			"name": "KeypadPad",
+			"from": [4.5, 14, 5.5],
+			"to": [11.5, 14.5, 8],
+			"faces": {
+				"north": {"uv": [4.5, 15.5, 11.5, 16], "texture": "#3"},
+				"east": {"uv": [5.5, 15.5, 8, 16], "texture": "#3"},
+				"south": {"uv": [4.5, 15.5, 11.5, 16], "texture": "#3"},
+				"west": {"uv": [5.5, 15.5, 8, 16], "texture": "#3"},
+				"up": {"uv": [4.5, 5.5, 11.5, 8], "texture": "#3"}
+			}
+		},
+		{
+			"name": "AttendantScreen",
+			"from": [5, 15, 7.9],
+			"to": [11, 17, 8],
+			"faces": {
+				"north": {"uv": [5, 1, 11, 3], "texture": "#5"}
+			}
+		},
+		{
+			"name": "CustomerPole",
+			"from": [7.5, 18, 9.5],
+			"to": [8.5, 21, 10.5],
+			"faces": {
+				"north": {"uv": [7.5, 13, 8.5, 16], "texture": "#2"},
+				"east": {"uv": [9.5, 13, 10.5, 16], "texture": "#2"},
+				"south": {"uv": [7.5, 13, 8.5, 16], "texture": "#2"},
+				"west": {"uv": [9.5, 13, 10.5, 16], "texture": "#2"}
+			}
+		},
+		{
+			"name": "CustomerScreenBody",
+			"from": [6, 21, 9],
+			"to": [10, 24, 11],
+			"faces": {
+				"north": {"uv": [6, 12, 10, 15], "texture": "#4"},
+				"east": {"uv": [9, 12, 11, 15], "texture": "#4"},
+				"south": {"uv": [6, 12, 10, 15], "texture": "#4"},
+				"west": {"uv": [9, 12, 11, 15], "texture": "#4"},
+				"up": {"uv": [6, 9, 10, 11], "texture": "#4"}
+			}
+		},
+		{
+			"name": "CustomerScreenDisplay",
+			"from": [6.5, 21.5, 11],
+			"to": [9.5, 23.5, 11.1],
+			"faces": {
+				"south": {"uv": [6.5, 12.5, 9.5, 14.5], "texture": "#5"}
+			}
+		}
+	],
+	"display": {
+		"gui": { "rotation": [30, 225, 0], "translation": [0, -2, 0], "scale": [0.625, 0.625, 0.625] },
+		"ground": { "translation": [0, 3, 0], "scale": [0.25, 0.25, 0.25] },
+		"fixed": { "translation": [0, 0, 0], "scale": [0.5, 0.5, 0.5] },
+		"thirdperson_righthand": { "rotation": [75, 45, 0], "translation": [0, 2.5, 0], "scale": [0.375, 0.375, 0.375] },
+		"firstperson_righthand": { "rotation": [0, 45, 0], "scale": [0.4, 0.4, 0.4] },
+		"firstperson_lefthand": { "rotation": [0, 225, 0], "scale": [0.4, 0.4, 0.4] }
+	}
+}

@@ -1,0 +1,7 @@
+{
+  "names": ["Gym Leader Erika"], "hitbox": "player", "resourceIdentifier": "cmoncol:erika",
+  "party": { "type": "simple", "pokemon": ["victreebel level=29", "tangela level=24", "vileplume level=29"] },
+  "battleConfiguration": { "canChallenge": true },
+  "interaction": { "type": "dialogue", "dialogue": "cmoncol:erika_dialogue" },
+  "ai": [ { "type": "apply_behaviours", "behaviours": [ "cobblemon:core" ] } ]
+}

@@ -33,3 +33,10 @@ A standalone MineColonies expansion for Cobblemon that introduces specialized pr
     versionRange="[1.7.3,)"
     ordering="NONE"
     side="BOTH"
+
+[[dependencies.cmoncol]]
+    modId="blockui"
+    type="required"
+    versionRange="[1.0.209,)"
+    ordering="NONE"
+    side="CLIENT"

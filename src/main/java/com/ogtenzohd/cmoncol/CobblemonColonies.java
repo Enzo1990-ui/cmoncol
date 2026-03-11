@@ -33,7 +33,6 @@ public class CobblemonColonies {
         modEventBus.addListener(this::commonSetup);
         
         modEventBus.addListener(this::registerEntityAttributes);
-		modEventBus.addListener(this::registerEntityRenderers);
              
         LOGGER.info("[Cobblemon Colonies] Mod Construction Complete.");
     }
@@ -41,14 +40,7 @@ public class CobblemonColonies {
     private void registerEntityAttributes(EntityAttributeCreationEvent event) {
         event.put(CmoncolReg.GHOST_RECEPTIONIST.get(), com.ogtenzohd.cmoncol.entity.GhostReceptionistEntity.createAttributes().build());
     }
-	
-	private void registerEntityRenderers(net.neoforged.neoforge.client.event.EntityRenderersEvent.RegisterRenderers event) {
-        event.registerEntityRenderer(
-            com.ogtenzohd.cmoncol.registration.CmoncolReg.GHOST_RECEPTIONIST.get(), 
-            com.ogtenzohd.cmoncol.client.render.InvisibleEntityRenderer::new
-        );
-    }
-    
+
     private void commonSetup(final FMLCommonSetupEvent event) {
         LOGGER.info("[Cobblemon Colonies] Common Setup Starting...");
         event.enqueueWork(() -> {

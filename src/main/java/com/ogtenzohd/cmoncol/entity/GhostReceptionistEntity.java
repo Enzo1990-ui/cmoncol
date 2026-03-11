@@ -44,22 +44,20 @@ public class GhostReceptionistEntity extends PathfinderMob {
     @Override
     protected InteractionResult mobInteract(Player player, InteractionHand hand) {
         if (this.level().isClientSide && hand == InteractionHand.MAIN_HAND) {
-            
-            net.minecraft.core.BlockPos.betweenClosedStream(
-                    this.blockPosition().offset(-10, -5, -10), 
-                    this.blockPosition().offset(10, 5, 10))
-                .filter(pos -> this.level().getBlockState(pos).getBlock() instanceof com.ogtenzohd.cmoncol.blocks.custom.gym.GymBlock)
-                .findFirst()
-                .ifPresent(gymPos -> {
-                    net.minecraft.client.Minecraft.getInstance().setScreen(
-                        new com.ldtteam.blockui.BOScreen(
-                            new com.ogtenzohd.cmoncol.colony.buildings.gui.GymWindow(gymPos)
-                        )
-                    );
-                });
-            
+            openGymWindowOnClient();
             return InteractionResult.SUCCESS;
         }
         return super.mobInteract(player, hand);
+    }
+
+    private void openGymWindowOnClient() {
+        net.minecraft.core.BlockPos.betweenClosedStream(
+                this.blockPosition().offset(-10, -5, -10),
+                this.blockPosition().offset(10, 5, 10))
+            .filter(pos -> this.level().getBlockState(pos).getBlock() instanceof com.ogtenzohd.cmoncol.blocks.custom.gym.GymBlock)
+            .findFirst()
+            .ifPresent(gymPos ->
+                com.ogtenzohd.cmoncol.client.ClientHooks.openGymWindow(gymPos.immutable())
+            );
     }
 }

@@ -5,7 +5,7 @@
   
   "block.cmoncol.colony_pasture": "Colony Pasture",
   "block.cmoncol.colony_daycare": "Colony Daycare",
-  "block.cmoncol.colony_traineracademy": "Trainer Academy",
+  "block.cmoncol.colony_traineracadamy": "Trainer Academy",
   "block.cmoncol.colony_harvester": "Apricorn Plantation",
   "block.cmoncol.colony_pokeballworkshop": "Pokéball Workshop",
   "block.cmoncol.colony_science_lab": "Science Lab",
@@ -15,7 +15,7 @@
 
   "com.cmoncol.building.colony_pasture": "Colony Pasture",
   "com.cmoncol.building.colony_daycare": "Colony Daycare",
-  "com.cmoncol.building.colony_traineracademy": "Trainer Academy",
+  "com.cmoncol.building.colony_traineracadamy": "Trainer Academy",
   "com.cmoncol.building.colony_harvester": "Apricorn Plantation",
   "com.cmoncol.building.colony_pokeballworkshop": "Pokéball Workshop",
   "com.cmoncol.building.colony_science_lab": "Science Lab",

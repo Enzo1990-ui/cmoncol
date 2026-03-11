@@ -8,8 +8,8 @@
   "key": {
     "B": { "item": "minecraft:stone_bricks" },
     "I": { "item": "minecraft:iron_sword" },
-    "S": { "item": "structurize:sceptergold" }
-	"H": { "item": "cobblemon:pokeball"}
+    "S": { "item": "structurize:sceptergold" },
+	"H": { "item": "cobblemon:poke_ball"}
   },
   "result": {
     "id": "cmoncol:colony_pokemon_guard"

@@ -99,6 +99,7 @@ public class CmoncolReg {
                 output.accept(PASTURE_ITEM.get());
                 output.accept(DAYCARE_ITEM.get());
                 output.accept(TRAINER_ACADAMY_ITEM.get());
+				output.accept(POKECENTER_ITEM.get());
                 output.accept(HARVESTER_ITEM.get());
                 output.accept(POKEBALLWORKSHOP_ITEM.get());
                 output.accept(SCIENCELAB_ITEM.get());

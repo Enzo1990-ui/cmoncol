@@ -1,0 +1,47 @@
+{
+    "initializationAction": "(q.npc.is_in_battle_with(q.player) || !q.npc.is_doing_activity('minecraft:idle', 'cobblemon:battling')) ? q.dialogue.close()",
+    "speakers": {
+        "npc": {
+            "name": "Gym Leader Bugsy",
+            "face": "q.npc.face(false);"
+        },
+        "player": {
+            "face": "q.player.face();",
+            "name": {
+                "type": "expression",
+                "expression": "q.player.username"
+            }
+        }
+    },
+    "pages": [
+        {
+            "id": "npc-chat",
+            "speaker": "npc",
+            "lines": [
+                "I'm Bugsy! I never lose when it comes to bug Pokemon. My research is going to make me the authority on bug Pokemon! Let me demonstrate what I've learned from my studies."
+            ],
+            "input": {
+                "type": "option",
+                "vertical": false,
+                "options": [
+                    {
+                        "text": "Let's Battle!",
+                        "value": "battle",
+                        "action": [
+                            "q.dialogue.close();",
+                            "q.npc.start_battle(q.player, 'single');"
+                        ],
+                        "isSelectable": "c.npc.can_battle;"
+                    },
+                    {
+                        "text": "Cancel",
+                        "value": "cancel",
+                        "action": [
+                            "q.dialogue.close()"
+                        ]
+                    }
+                ]
+            }
+        }
+    ]
+}

@@ -1,0 +1,25 @@
+{
+  "type": "recipe",
+  "crafter": "pokeball_workshop_crafting",
+  "inputs": [
+	{
+      "id": "cobblemon:red_apricorn"
+    },
+    {
+      "count": 2,
+      "id": "cobblemon:yellow_apricorn"
+    },
+	{
+      "id": "cobblemon:white_apricorn"
+    },
+    {
+      "id": "minecraft:iron_ingot"
+    }
+  ],
+  "intermediate": "minecraft:air",
+  "min-building-level": 2,
+  "result": {
+    "count": 4,
+    "id": "cobblemon:fast_ball"
+  }
+}

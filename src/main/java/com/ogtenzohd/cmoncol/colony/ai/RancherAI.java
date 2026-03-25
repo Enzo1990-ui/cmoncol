@@ -19,7 +19,6 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import com.cobblemon.mod.common.pokemon.Pokemon;
-import com.minecolonies.api.colony.requestsystem.requestable.Stack;
 
 public class RancherAI extends AbstractEntityAIBasic<RancherJob, PastureBuilding> {
     private enum State { MOVE_TO_TARGET, CHECK_POKEMON, CHECK_TOOL, WORK, RETURN_TO_HUT, DEPOSIT_ITEMS }

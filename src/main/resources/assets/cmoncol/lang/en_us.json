@@ -2,6 +2,7 @@
   "itemGroup.cmoncol_tab": "Cobblemon Colonies",
   
   "item.cmoncol.pokemon_egg": "Pokemon Egg",
+  "item.cmoncol.wonder_booster": "Wonder Booster",
   
   "block.cmoncol.colony_pasture": "Colony Pasture",
   "block.cmoncol.colony_daycare": "Colony Daycare",
@@ -12,16 +13,22 @@
   "block.cmoncol.colony_pokecenter": "Poké Center",
   "block.cmoncol.colony_pokemon_guard": "Pokémon Guard Tower",
   "block.cmoncol.colony_gym": "Pokémon Gym",
+  "block.cmoncol.colony_wonder_trade": "Wonder Trade Centre",
+  "block.cmoncol.colony_pokemart": "Poké Mart",
+  "block.cmoncol.colony_ranger": "Pokémon Ranger",
 
   "com.cmoncol.building.colony_pasture": "Colony Pasture",
   "com.cmoncol.building.colony_daycare": "Colony Daycare",
-  "com.cmoncol.building.colony_traineracadamy": "Trainer Academy",
+  "com.cmoncol.building.colony_traineracademy": "Trainer Academy",
   "com.cmoncol.building.colony_harvester": "Apricorn Plantation",
   "com.cmoncol.building.colony_pokeballworkshop": "Pokéball Workshop",
   "com.cmoncol.building.colony_science_lab": "Science Lab",
   "com.cmoncol.building.colony_pokecenter": "Poké Center",
   "com.cmoncol.building.colony_pokemon_guard": "Pokémon Guard Tower",
   "com.cmoncol.building.colony_gym": "Pokémon Gym",
+  "com.cmoncol.building.colony_wonder_trade": "Wonder Trade Centre",
+  "com.cmoncol.building.colony_pokemart": "Poké Mart",
+  "com.cmoncol.building.colony_ranger": "Rancher Watch Tower",
 
   "com.cmoncol.job.rancher": "Rancher",
   "com.cmoncol.job.attendant": "Daycare Attendant",
@@ -32,6 +39,12 @@
   "com.cmoncol.job.nurse": "Nurse",
   "com.cmoncol.job.pokemon_guard": "Pokémon Guard",
   "com.cmoncol.job.gym": "Gym Leader",
+  "com.cmoncol.job.wonder_trader": "Wonder Trader",
+  "com.cmoncol.job.pokemerchant": "Poké Mart Cashier",
+  "com.cmoncol.job.rancher": "Pokémon Ranger",
+
+  "entity.minecolonies.wonder_trader": "Wonder Trader",
+  "entity.minecolonies.pokemerchant": "Poké Mart Cashier",
   
   "cmoncol:rancher.job.desc": "The Rancher harvests passive resources like Wool and Milk from Pokémon stored in the Pasture.",
   "cmoncol:attendant.job.desc": "The Attendant trains and breeds Pokémon in the Daycare in exchange for currency.",
@@ -42,14 +55,20 @@
   "cmoncol:nurse.job.desc": "The Nurse heals nearby players and their Pokémon, and calls upon a companion Pokémon to assist them.",
   "cmoncol:pokemon_guard.job.desc": "The Pokémon Guard patrols the colony alongside their trusty companion to fend off monster raids.",
   "cmoncol:gym.job.desc": "The Gym Leader waits for challengers. Defeat them to earn a prestigious Gym Badge!",
+  "cmoncol:wonder_trader.job.desc": "The Wonder Trader takes your deposited Pokémon and exchanges it for a completely random one from across the globe.",
+  "cmoncol:pokemerchant.job.desc": "The Poké Mart Cashier sells essential items like Pokéballs and Potions. Their inventory expands as the building levels up.",
+  "cmoncol:ranger.job.desc": "The Ranger will travel around your colony making sure all the Pokémon are safe. Whilst wandering round they may find abandoned Pokémon Eggs and if your a good trainer present you with one. The Eggs they find can have better stats and rare Pokémon as the building levels up.",
   
   "cmoncol:rancher.skills.desc": "Benefits from high Stamina and Agility to harvest resources faster.",
   "cmoncol:attendant.skills.desc": "Benefits from high Mana and Knowledge to grant more XP per training cycle.",
   "cmoncol:ev_trainer.skills.desc": "Benefits from high Athletics and Strength to EV train faster.",
   "cmoncol:harvester.skills.desc": "Benefits from high Agility and Stamina to harvest faster.",
-  "cmoncol:pokeball_workshop.skills.desc": "Benefits from high Intelligence and Agility to craft faster.",
+  "cmoncol:pokeball_workshop.skills.desc": "Benefits from high Dexterity and Agility to craft faster.",
   "cmoncol:science_lab.skills.desc": "Benefits from high Intelligence and Knowledge to process materials faster.",
   "cmoncol:nurse.skills.desc": "Benefits from high Intelligence and Adaptability to manage the Poké Center efficiently.",
   "cmoncol:pokemon_guard.skills.desc": "Benefits from high Athletics and Strength to better defend the town.",
-  "cmoncol:gym.skills.desc": "Benefits from high Knowledge and Mana to strategize and battle effectively."
+  "cmoncol:gym.skills.desc": "Benefits from high Knowledge and Mana to strategize and battle effectively.",
+  "cmoncol:wonder_trader.skills.desc": "Benefits from high Mana and Knowledge to process Wonder Trades more efficiently.",
+  "cmoncol:pokemerchant.skills.desc": "Benefits from high Adaptability and Intelligence to manage shop inventory and customer satisfaction.",
+  "cmoncol:rancher.skills.desc": "Benefits from high Agility and Athletics to navigate around your Colony and avoid dangerous Pokémon."
 }

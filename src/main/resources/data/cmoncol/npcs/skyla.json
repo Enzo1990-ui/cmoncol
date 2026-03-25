@@ -1,0 +1,78 @@
+{
+    "names": [
+        "Gym Leader Skyla"
+    ],
+    "hitbox": "player",
+    "resourceIdentifier": "cmoncol:skyla",
+    "config": [
+        {
+            "variableName": "challenge_cooldown",
+            "type": "NUMBER",
+            "defaultValue": "5"
+        },
+        {
+            "variableName": "can_rechallenge",
+            "type": "BOOLEAN",
+            "defaultValue": true
+        },
+        {
+            "variableName": "intro_text",
+            "type": "TEXT",
+            "defaultValue": "Welcome to the Mistralton City Pokemon Gym. I'm Skyla, the Gym Leader. I use Flying-type Pokemon. Let's see if you can handle my high-flying acrobatics!"
+        },
+        {
+            "variableName": "challenge_text",
+            "type": "TEXT",
+            "defaultValue": "Let's Battle!"
+        },
+        {
+            "variableName": "challenge_accepted_text",
+            "type": "TEXT",
+            "defaultValue": "Great! Let's battle!"
+        },
+        {
+            "variableName": "challenge_rejected_text",
+            "type": "TEXT",
+            "defaultValue": "That's too bad. Maybe next time!"
+        },
+        {
+            "variableName": "challenge_cooldown_text",
+            "type": "TEXT",
+            "defaultValue": "I'm sorry, but I'm not ready for another battle yet."
+        }
+    ],
+    "interaction": {
+        "type": "dialogue",
+        "dialogue": "cmoncol:skyla_dialogue"
+    },
+    "battleConfiguration": {
+        "canChallenge": true
+    },
+    "autoHealParty": true,
+    "skill": 5,
+    "party": {
+        "type": "simple",
+        "pokemon": [
+            {
+                "species": "swoobat",
+                "level": 33
+            },
+            {
+                "species": "unfezant",
+                "level": 33
+            },
+            {
+                "species": "swanna",
+                "level": 35
+            }
+        ]
+    },
+    "ai": [
+        {
+            "type": "apply_behaviours",
+            "behaviours": [
+                "cobblemon:core"
+            ]
+        }
+    ]
+}

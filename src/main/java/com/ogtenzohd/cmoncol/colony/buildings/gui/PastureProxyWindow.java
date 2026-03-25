@@ -101,7 +101,9 @@ public class PastureProxyWindow extends AbstractModuleWindow<PastureProxyModuleV
                 var p = party.get(index);
                 if (p != null) return p.getDisplayName(true).getString();
             }
-        } catch(Exception e) {}
+        } catch(Exception e) {
+            throw new RuntimeException(e);
+        }
         return "Empty";
     }
 }

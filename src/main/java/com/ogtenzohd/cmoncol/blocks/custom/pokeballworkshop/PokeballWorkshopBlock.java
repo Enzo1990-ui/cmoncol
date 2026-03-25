@@ -15,6 +15,7 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class PokeballWorkshopBlock extends AbstractBlockHut<PokeballWorkshopBlock> {
@@ -32,11 +33,11 @@ public class PokeballWorkshopBlock extends AbstractBlockHut<PokeballWorkshopBloc
 
     @Nullable
     @Override
-    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { return new PokeballWorkshopBlockEntity(pos, state); }
+    public BlockEntity newBlockEntity( BlockPos pos, BlockState state) { return new PokeballWorkshopBlockEntity(pos, state); }
 
     @Nullable
     @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker( Level level, BlockState state, BlockEntityType<T> type) {
         if (type == CmoncolReg.POKEBALLWORKSHOP_BE.get()) {
             return (BlockEntityTicker<T>) (BlockEntityTicker<PokeballWorkshopBlockEntity>) (l, p, s, be) -> be.tick();
         }
@@ -44,7 +45,7 @@ public class PokeballWorkshopBlock extends AbstractBlockHut<PokeballWorkshopBloc
     }
 
     @Override
-    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+    protected @NotNull InteractionResult useWithoutItem( BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         if (player.isShiftKeyDown()) return InteractionResult.PASS;
         if (!level.isClientSide()) {
             BlockEntity entity = level.getBlockEntity(pos);

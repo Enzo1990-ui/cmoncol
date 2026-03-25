@@ -1,0 +1,68 @@
+{
+    "names": [
+        "Gym Leader Whitney"
+    ],
+    "hitbox": "player",
+    "resourceIdentifier": "cmoncol:whitney",
+    "config": [
+        {
+            "variableName": "challenge_cooldown",
+            "type": "NUMBER",
+            "defaultValue": "5"
+        },
+        {
+            "variableName": "can_rechallenge",
+            "type": "BOOLEAN",
+            "defaultValue": true
+        },
+        {
+            "variableName": "intro_text",
+            "type": "TEXT",
+            "defaultValue": "Hi! I'm Whitney! Everyone was into Pokemon, so I got into it too! Pokemon are super-cute! You want to battle? I'm warning you--I'm good!"
+        },
+        {
+            "variableName": "challenge_text",
+            "type": "TEXT",
+            "defaultValue": "Let's Battle!"
+        },
+        {
+            "variableName": "challenge_accepted_text",
+            "type": "TEXT",
+            "defaultValue": "Great! Let's battle!"
+        },
+        {
+            "variableName": "challenge_rejected_text",
+            "type": "TEXT",
+            "defaultValue": "That's too bad. Maybe next time!"
+        },
+        {
+            "variableName": "challenge_cooldown_text",
+            "type": "TEXT",
+            "defaultValue": "I'm sorry, but I'm not ready for another battle yet."
+        }
+    ],
+    "interaction": {
+        "type": "dialogue",
+        "dialogue": "cmoncol:whitney_dialogue"
+    },
+    "battleConfiguration": {
+        "canChallenge": true
+    },
+    "autoHealParty": true,
+    "skill": 5,
+    "party": {
+        "type": "simple",
+        "pokemon": [
+            "clefairy level=18",
+            "miltank level=20"
+        ]
+    },
+    "ai": [
+        {
+            "type": "apply_behaviours",
+            "behaviours": [
+                "cobblemon:core"
+            ]
+        }
+    ]
+}

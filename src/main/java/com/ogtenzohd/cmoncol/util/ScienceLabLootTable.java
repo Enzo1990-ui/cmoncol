@@ -198,6 +198,8 @@ public class ScienceLabLootTable {
 
     private static void addGlobals(List<WeightedItem> list) {
         // Uncommon in all places
+        list.add(new WeightedItem("cmoncol:wonder_booster", 2));
+
         list.add(new WeightedItem("cobblemon:vivichoke_seeds", 4));
         
         // Common in all places

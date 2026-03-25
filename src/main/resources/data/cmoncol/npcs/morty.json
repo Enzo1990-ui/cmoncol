@@ -1,0 +1,70 @@
+{
+    "names": [
+        "Gym Leader Morty"
+    ],
+    "hitbox": "player",
+    "resourceIdentifier": "cmoncol:morty",
+    "config": [
+        {
+            "variableName": "challenge_cooldown",
+            "type": "NUMBER",
+            "defaultValue": "5"
+        },
+        {
+            "variableName": "can_rechallenge",
+            "type": "BOOLEAN",
+            "defaultValue": true
+        },
+        {
+            "variableName": "intro_text",
+            "type": "TEXT",
+            "defaultValue": "Good of you to have come. Here in Ecruteak, Pokemon have been revered. It's said that a legendary Pokemon will appear to the truly powerful trainers. I believed that tale, so I have secretly trained here all my life."
+        },
+        {
+            "variableName": "challenge_text",
+            "type": "TEXT",
+            "defaultValue": "Let's Battle!"
+        },
+        {
+            "variableName": "challenge_accepted_text",
+            "type": "TEXT",
+            "defaultValue": "Great! Let's battle!"
+        },
+        {
+            "variableName": "challenge_rejected_text",
+            "type": "TEXT",
+            "defaultValue": "That's too bad. Maybe next time!"
+        },
+        {
+            "variableName": "challenge_cooldown_text",
+            "type": "TEXT",
+            "defaultValue": "I'm sorry, but I'm not ready for another battle yet."
+        }
+    ],
+    "interaction": {
+        "type": "dialogue",
+        "dialogue": "cmoncol:morty_dialogue"
+    },
+    "battleConfiguration": {
+        "canChallenge": true
+    },
+    "autoHealParty": true,
+    "skill": 5,
+    "party": {
+        "type": "simple",
+        "pokemon": [
+            "gastly level=21",
+            "haunter level=21",
+            "haunter level=23",
+            "gengar level=25"
+        ]
+    },
+    "ai": [
+        {
+            "type": "apply_behaviours",
+            "behaviours": [
+                "cobblemon:core"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "cmoncol:block/colony_pokemart" },
+    "facing=east":  { "model": "cmoncol:block/colony_pokemart", "y": 90 },
+    "facing=south": { "model": "cmoncol:block/colony_pokemart", "y": 180 },
+    "facing=west":  { "model": "cmoncol:block/colony_pokemart", "y": 270 }
+  }
+}

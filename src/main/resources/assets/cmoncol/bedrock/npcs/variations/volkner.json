@@ -1,0 +1,13 @@
+{
+    "name": "cmoncol:volkner",
+    "order": 0,
+    "variations": [
+        {
+            "aspects": [],
+            "poser": "cobblemon:standard",
+            "model": "cobblemon:steve.geo",
+            "texture": "cmoncol:textures/entity/npc/volkner.png",
+            "layers": []
+        }
+    ]
+}

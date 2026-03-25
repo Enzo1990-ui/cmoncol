@@ -1,20 +1,140 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <window xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/ldtteam/BlockUI/version/main/src/main/resources/assets/blockui/gui/block_ui.xsd"
-        size="190 244" lightbox="true">
-    
+        size="190 244"
+        lightbox="true">
+
     <layout source="minecolonies:gui/layouthuts/layouthutpageactions.xml"/>
     <image source="minecolonies:textures/gui/builderhut/builder_paper.png" size="190 244" pos="0 0"/>
 
-    <text id="title" size="190 12" pos="60 15" color="black" label="Gym Challenge"/>
+    <text id="title" size="190 12" pos="55 12" color="black" label="Gym Challenge"/>
 
-    <button id="btn_brock" size="150 20" pos="20 35" label="Challenge Brock" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
-    <button id="btn_misty" size="150 20" pos="20 60" label="Challenge Misty" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
-    <button id="btn_surge" size="150 20" pos="20 85" label="Challenge Surge" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
-    <button id="btn_erika" size="150 20" pos="20 110" label="Challenge Erika" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
-    <button id="btn_koga" size="150 20" pos="20 135" label="Challenge Koga" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
-    <button id="btn_sabrina" size="150 20" pos="20 160" label="Challenge Sabrina" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
-    <button id="btn_blaine" size="150 20" pos="20 185" label="Challenge Blaine" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
-    <button id="btn_giovanni" size="150 20" pos="20 210" label="Challenge Giovanni" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+    <button id="tab_kanto" size="42 16" pos="6 28" label="Kanto" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+    <button id="tab_johto" size="42 16" pos="52 28" label="Johto" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+    <button id="tab_hoenn" size="42 16" pos="98 28" label="Hoenn" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+    <button id="tab_sinnoh" size="42 16" pos="144 28" label="Sinnoh" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+
+    <button id="tab_unova" size="42 16" pos="6 46" label="Unova" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+    <button id="tab_kalos" size="42 16" pos="52 46" label="Kalos" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+    <button id="tab_galar" size="42 16" pos="98 46" label="Galar" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+    <button id="tab_paldea" size="42 16" pos="144 46" label="Paldea" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+
+    <box id="page_kanto" size="180 140" pos="5 68" linewidth="0">
+        <button id="btn_brock" size="85 20" pos="0 0" label="Pewter" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+        <button id="btn_misty" size="85 20" pos="95 0" label="Cerulean" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+
+        <button id="btn_surge" size="85 20" pos="0 24" label="Vermilion" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+        <button id="btn_erika" size="85 20" pos="95 24" label="Celadon" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+
+        <button id="btn_koga" size="85 20" pos="0 48" label="Fuchsia" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+        <button id="btn_sabrina" size="85 20" pos="95 48" label="Saffron" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+
+        <button id="btn_blaine" size="85 20" pos="0 72" label="Cinnabar" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+        <button id="btn_giovanni" size="85 20" pos="95 72" label="Viridian" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+    </box>
+
+    <box id="page_johto" size="180 140" pos="5 68" linewidth="0">
+        <button id="btn_falkner" size="85 20" pos="0 0" label="Violet" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+        <button id="btn_bugsy" size="85 20" pos="95 0" label="Azalea" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+
+        <button id="btn_whitney" size="85 20" pos="0 24" label="Goldenrod" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+        <button id="btn_morty" size="85 20" pos="95 24" label="Ecruteak" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+
+        <button id="btn_chuck" size="85 20" pos="0 48" label="Cianwood" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+        <button id="btn_jasmine" size="85 20" pos="95 48" label="Olivine" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+
+        <button id="btn_pryce" size="85 20" pos="0 72" label="Mahogany" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+        <button id="btn_clair" size="85 20" pos="95 72" label="Blackthorn" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+    </box>
+
+    <box id="page_hoenn" size="180 140" pos="5 68" linewidth="0">
+        <button id="btn_roxanne" size="85 20" pos="0 0" label="Rustboro" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+        <button id="btn_brawly" size="85 20" pos="95 0" label="Dewford" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+
+        <button id="btn_wattson" size="85 20" pos="0 24" label="Mauville" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+        <button id="btn_flannery" size="85 20" pos="95 24" label="Lavaridge" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+
+        <button id="btn_norman" size="85 20" pos="0 48" label="Petalburg" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+        <button id="btn_winona" size="85 20" pos="95 48" label="Fortree" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+
+        <button id="btn_tate_and_liza" size="85 20" pos="0 72" label="Mossdeep" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+        <button id="btn_sootopolis" size="85 20" pos="95 72" label="Sootopolis" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+    </box>
+
+    <box id="page_sinnoh" size="180 140" pos="5 68" linewidth="0">
+        <button id="btn_roark" size="85 20" pos="0 0" label="Oreburgh" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+        <button id="btn_gardenia" size="85 20" pos="95 0" label="Eterna" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+
+        <button id="btn_maylene" size="85 20" pos="0 24" label="Veilstone" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+        <button id="btn_crasher_wake" size="85 20" pos="95 24" label="Pastoria" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+
+        <button id="btn_fantina" size="85 20" pos="0 48" label="Hearthome" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+        <button id="btn_byron" size="85 20" pos="95 48" label="Canalave" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+
+        <button id="btn_candice" size="85 20" pos="0 72" label="Snowpoint" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+        <button id="btn_volkner" size="85 20" pos="95 72" label="Sunyshore" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+    </box>
+
+    <box id="page_unova" size="180 140" pos="5 68" linewidth="0">
+        <button id="btn_striaton" size="85 20" pos="0 0" label="Striaton" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+        <button id="btn_lenora" size="85 20" pos="95 0" label="Nacrene" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+
+        <button id="btn_burgh" size="85 20" pos="0 24" label="Castelia" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+        <button id="btn_elesa" size="85 20" pos="95 24" label="Nimbasa" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+
+        <button id="btn_clay" size="85 20" pos="0 48" label="Driftveil" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+        <button id="btn_skyla" size="85 20" pos="95 48" label="Mistralton" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+
+        <button id="btn_brycen" size="85 20" pos="0 72" label="Icirrus" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+        <button id="btn_opelucid" size="85 20" pos="95 72" label="Opelucid" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+
+        <button id="btn_cheren" size="85 20" pos="0 96" label="Aspertia" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+        <button id="btn_roxie" size="85 20" pos="95 96" label="Virbank" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+
+        <button id="btn_marlon" size="85 20" pos="47 120" label="Humilau" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+    </box>
+
+    <box id="page_kalos" size="180 140" pos="5 68" linewidth="0">
+        <button id="btn_viola" size="85 20" pos="0 0" label="Santalune" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+        <button id="btn_grant" size="85 20" pos="95 0" label="Cyllage" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+
+        <button id="btn_korrina" size="85 20" pos="0 24" label="Shalour" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+        <button id="btn_ramos" size="85 20" pos="95 24" label="Coumarine" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+
+        <button id="btn_clemont" size="85 20" pos="0 48" label="Lumiose" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+        <button id="btn_valerie" size="85 20" pos="95 48" label="Laverre" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+
+        <button id="btn_olympia" size="85 20" pos="0 72" label="Anistar" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+        <button id="btn_wulfric" size="85 20" pos="95 72" label="Snowbelle" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+    </box>
+
+    <box id="page_galar" size="180 140" pos="5 68" linewidth="0">
+        <button id="btn_milo" size="85 20" pos="0 0" label="Turffield" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+        <button id="btn_nessa" size="85 20" pos="95 0" label="Hulbury" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+
+        <button id="btn_kabu" size="85 20" pos="0 24" label="Motostoke" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+        <button id="btn_stow_on_side" size="85 20" pos="95 24" label="Stow-on-Side" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+
+        <button id="btn_opal" size="85 20" pos="0 48" label="Ballonlea" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+        <button id="btn_circhester" size="85 20" pos="95 48" label="Circhester" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+
+        <button id="btn_piers" size="85 20" pos="0 72" label="Spikemuth" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+        <button id="btn_raihan" size="85 20" pos="95 72" label="Hammerlocke" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+    </box>
+
+    <box id="page_paldea" size="180 140" pos="5 68" linewidth="0">
+        <button id="btn_katy" size="85 20" pos="0 0" label="Cortondo" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+        <button id="btn_brassius" size="85 20" pos="95 0" label="Artazon" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+
+        <button id="btn_iono" size="85 20" pos="0 24" label="Levincia" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+        <button id="btn_kofu" size="85 20" pos="95 24" label="Cascarrafa" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+
+        <button id="btn_larry" size="85 20" pos="0 48" label="Medali" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+        <button id="btn_ryme" size="85 20" pos="95 48" label="Montenevera" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+
+        <button id="btn_tulip" size="85 20" pos="0 72" label="Alfornada" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+        <button id="btn_grusha" size="85 20" pos="95 72" label="Glaseado" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+    </box>
+
+    <button id="btn_supporter" size="140 20" pos="25 212" label="Battle a VIP!" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
 
 </window>

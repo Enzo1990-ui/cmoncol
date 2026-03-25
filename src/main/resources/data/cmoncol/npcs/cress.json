@@ -1,0 +1,74 @@
+{
+    "names": [
+        "Gym Leader Cress"
+    ],
+    "hitbox": "player",
+    "resourceIdentifier": "cmoncol:cress",
+    "config": [
+        {
+            "variableName": "challenge_cooldown",
+            "type": "NUMBER",
+            "defaultValue": "5"
+        },
+        {
+            "variableName": "can_rechallenge",
+            "type": "BOOLEAN",
+            "defaultValue": true
+        },
+        {
+            "variableName": "intro_text",
+            "type": "TEXT",
+            "defaultValue": "Welcome to the Striaton City Pokemon Gym. I'm Cress, one of the Gym Leaders. You chose Tepig as your first partner, did you not? Then I shall be your opponent. I use Water-type Pokemon. Let us have a graceful battle."
+        },
+        {
+            "variableName": "challenge_text",
+            "type": "TEXT",
+            "defaultValue": "Let's Battle!"
+        },
+        {
+            "variableName": "challenge_accepted_text",
+            "type": "TEXT",
+            "defaultValue": "Great! Let's battle!"
+        },
+        {
+            "variableName": "challenge_rejected_text",
+            "type": "TEXT",
+            "defaultValue": "That's too bad. Maybe next time!"
+        },
+        {
+            "variableName": "challenge_cooldown_text",
+            "type": "TEXT",
+            "defaultValue": "I'm sorry, but I'm not ready for another battle yet."
+        }
+    ],
+    "interaction": {
+        "type": "dialogue",
+        "dialogue": "cmoncol:cress_dialogue"
+    },
+    "battleConfiguration": {
+        "canChallenge": true
+    },
+    "autoHealParty": true,
+    "skill": 5,
+    "party": {
+        "type": "simple",
+        "pokemon": [
+            {
+                "species": "lillipup",
+                "level": 12
+            },
+            {
+                "species": "panpour",
+                "level": 14
+            }
+        ]
+    },
+    "ai": [
+        {
+            "type": "apply_behaviours",
+            "behaviours": [
+                "cobblemon:core"
+            ]
+        }
+    ]
+}

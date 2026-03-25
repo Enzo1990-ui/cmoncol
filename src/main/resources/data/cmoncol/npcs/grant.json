@@ -1,0 +1,74 @@
+{
+    "names": [
+        "Gym Leader Grant"
+    ],
+    "hitbox": "player",
+    "resourceIdentifier": "cmoncol:grant",
+    "config": [
+        {
+            "variableName": "challenge_cooldown",
+            "type": "NUMBER",
+            "defaultValue": "5"
+        },
+        {
+            "variableName": "can_rechallenge",
+            "type": "BOOLEAN",
+            "defaultValue": true
+        },
+        {
+            "variableName": "intro_text",
+            "type": "TEXT",
+            "defaultValue": "Welcome to the Cyllage City Pokemon Gym! I'm Grant, the Gym Leader. I specialize in Rock-type Pokemon. Climbing walls and battling Pokemon... both require you to push your limits. Let's see what you can do!"
+        },
+        {
+            "variableName": "challenge_text",
+            "type": "TEXT",
+            "defaultValue": "Let's Battle!"
+        },
+        {
+            "variableName": "challenge_accepted_text",
+            "type": "TEXT",
+            "defaultValue": "Great! Let's battle!"
+        },
+        {
+            "variableName": "challenge_rejected_text",
+            "type": "TEXT",
+            "defaultValue": "That's too bad. Maybe next time!"
+        },
+        {
+            "variableName": "challenge_cooldown_text",
+            "type": "TEXT",
+            "defaultValue": "I'm sorry, but I'm not ready for another battle yet."
+        }
+    ],
+    "interaction": {
+        "type": "dialogue",
+        "dialogue": "cmoncol:grant_dialogue"
+    },
+    "battleConfiguration": {
+        "canChallenge": true
+    },
+    "autoHealParty": true,
+    "skill": 5,
+    "party": {
+        "type": "simple",
+        "pokemon": [
+            {
+                "species": "amaura",
+                "level": 25
+            },
+            {
+                "species": "tyrunt",
+                "level": 25
+            }
+        ]
+    },
+    "ai": [
+        {
+            "type": "apply_behaviours",
+            "behaviours": [
+                "cobblemon:core"
+            ]
+        }
+    ]
+}

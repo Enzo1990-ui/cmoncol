@@ -1,0 +1,82 @@
+{
+    "names": [
+        "Gym Leader Iono"
+    ],
+    "hitbox": "player",
+    "resourceIdentifier": "cmoncol:iono",
+    "config": [
+        {
+            "variableName": "challenge_cooldown",
+            "type": "NUMBER",
+            "defaultValue": "5"
+        },
+        {
+            "variableName": "can_rechallenge",
+            "type": "BOOLEAN",
+            "defaultValue": true
+        },
+        {
+            "variableName": "intro_text",
+            "type": "TEXT",
+            "defaultValue": "Ello, 'ello, hola! Ciao and Bonjour! Welcome to the Levincia Pokemon Gym! I'm Iono, your favorite streamer and Gym Leader! I specialize in Electric-type Pokemon. Let's get some shocking footage for the stream!"
+        },
+        {
+            "variableName": "challenge_text",
+            "type": "TEXT",
+            "defaultValue": "Let's Battle!"
+        },
+        {
+            "variableName": "challenge_accepted_text",
+            "type": "TEXT",
+            "defaultValue": "Great! Let's battle!"
+        },
+        {
+            "variableName": "challenge_rejected_text",
+            "type": "TEXT",
+            "defaultValue": "That's too bad. Maybe next time!"
+        },
+        {
+            "variableName": "challenge_cooldown_text",
+            "type": "TEXT",
+            "defaultValue": "I'm sorry, but I'm not ready for another battle yet."
+        }
+    ],
+    "interaction": {
+        "type": "dialogue",
+        "dialogue": "cmoncol:iono_dialogue"
+    },
+    "battleConfiguration": {
+        "canChallenge": true
+    },
+    "autoHealParty": true,
+    "skill": 5,
+    "party": {
+        "type": "simple",
+        "pokemon": [
+            {
+                "species": "wattrel",
+                "level": 23
+            },
+            {
+                "species": "bellibolt",
+                "level": 23
+            },
+            {
+                "species": "luxio",
+                "level": 23
+            },
+            {
+                "species": "mismagius",
+                "level": 24
+            }
+        ]
+    },
+    "ai": [
+        {
+            "type": "apply_behaviours",
+            "behaviours": [
+                "cobblemon:core"
+            ]
+        }
+    ]
+}

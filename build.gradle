@@ -142,8 +142,13 @@ dependencies {
     implementation ("com.ldtteam:blockui:${blockui_version}")
     implementation ("com.ldtteam:domum-ornamentum:${domum_ornamentum_version}")
     implementation ("com.ldtteam:datagenerators:1.20.4-0.1.57-ALPHA:universal")
-	
+
 	compileOnly("org.jetbrains.kotlin:kotlin-stdlib:1.9.22")
+
+    compileOnly(fileTree(dir: 'libs', include: ['allthemons-0.0.40.jar']))
+    compileOnly(fileTree(dir: 'libs', include: ['CobbleDollars-neoforge-2.0.0+Beta-5.1+1.21.1.jar']))
+    compileOnly(fileTree(dir: 'libs', include: ['rctmod-neoforge-1.21.1-0.17.6-beta.jar']))
+    compileOnly(fileTree(dir: 'libs', include: ['rctapi-neoforge-1.21.1-0.14.8-beta.jar']))
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.

@@ -10,6 +10,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import com.ogtenzohd.cmoncol.CobblemonColonies;
+import org.jetbrains.annotations.NotNull;
 
 public class UpdateDigSitePacket implements CustomPacketPayload {
     public static final Type<UpdateDigSitePacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(CobblemonColonies.MODID, "update_dig_site"));
@@ -25,14 +26,13 @@ public class UpdateDigSitePacket implements CustomPacketPayload {
     public BlockPos pos() { return pos; }
 
     @Override
-    public Type<? extends CustomPacketPayload> type() { return TYPE; }
+    public @NotNull Type<? extends CustomPacketPayload> type() { return TYPE; }
 
     public static void handle(final UpdateDigSitePacket payload, final IPayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player() instanceof ServerPlayer player) {
                 BlockEntity be = player.level().getBlockEntity(payload.pos);
-                if (be instanceof ScienceLabBlockEntity lab) {
-                }
+                ScienceLabBlockEntity lab = (ScienceLabBlockEntity) be;
             }
         });
     }

@@ -1,0 +1,52 @@
+{
+	"format_version": "1.21.11",
+	"credit": "Made with Blockbench",
+	"ambientocclusion": true,
+	"textures": {
+		"wood": "minecraft:block/oak_planks",
+		"trim": "minecraft:block/stripped_oak_log",
+		"register": "minecraft:block/iron_block",
+		"screen": "minecraft:block/green_concrete",
+		"particle": "minecraft:block/oak_planks"
+	},
+  "elements": [
+    {
+      "name": "CounterBase",
+      "from": [0, 0, 0],
+      "to": [16, 12, 16],
+      "faces": {
+        "north": {"uv": [0, 4, 16, 16], "texture": "#wood"},
+        "east": {"uv": [0, 4, 16, 16], "texture": "#wood"},
+        "south": {"uv": [0, 4, 16, 16], "texture": "#wood"},
+        "west": {"uv": [0, 4, 16, 16], "texture": "#wood"},
+        "up": {"uv": [0, 0, 16, 16], "texture": "#trim"},
+        "down": {"uv": [0, 0, 16, 16], "texture": "#wood"}
+      }
+    },
+    {
+      "name": "RegisterBase",
+      "from": [4, 12, 8],
+      "to": [12, 16, 14],
+      "faces": {
+        "north": {"uv": [4, 12, 12, 16], "texture": "#register"},
+        "east": {"uv": [2, 12, 8, 16], "texture": "#register"},
+        "south": {"uv": [4, 12, 12, 16], "texture": "#register"},
+        "west": {"uv": [8, 12, 14, 16], "texture": "#register"},
+        "up": {"uv": [4, 8, 12, 14], "texture": "#register"}
+      }
+    },
+    {
+      "name": "RegisterScreen",
+      "from": [5, 14, 7],
+      "to": [11, 18, 9],
+      "rotation": {"origin": [8, 14, 8], "axis": "x", "angle": -22.5},
+      "faces": {
+        "north": {"uv": [5, 0, 11, 4], "texture": "#screen"},
+        "east": {"uv": [7, 0, 9, 4], "texture": "#register"},
+        "south": {"uv": [5, 0, 11, 4], "texture": "#register"},
+        "west": {"uv": [7, 0, 9, 4], "texture": "#register"},
+        "up": {"uv": [5, 7, 11, 9], "texture": "#register"}
+      }
+    }
+  ]
+}

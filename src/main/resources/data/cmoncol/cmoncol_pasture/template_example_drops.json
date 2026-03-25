@@ -1,0 +1,49 @@
+{
+  "_comment": "This is a template file demonstrating how Addon Creators or Datapack makers can add custom Pasture drops to Cobblemon Colonies.",
+  "_comment2": "To use this, create a file in your own datapack at: data/<your_namespace>/cmoncol_pasture/any_name.json",
+  
+  "pikachu": [
+    {
+      "tool": "none",
+      "drops": [
+        {
+          "item": "minecraft:apple",
+          "min": 1,
+          "max": 3,
+          "chance": 0.5
+        }
+      ]
+    },
+    {
+      "tool": "minecraft:shears",
+      "drops": [
+        {
+          "item": "cobblemon:light_ball",
+          "min": 1,
+          "max": 1,
+          "chance": 0.05
+        },
+        {
+          "item": "minecraft:yellow_wool",
+          "min": 1,
+          "max": 2,
+          "chance": 1.0
+        }
+      ]
+    }
+  ],
+  
+  "bidoof": [
+    {
+      "tool": "none",
+      "drops": [
+        {
+          "item": "minecraft:stick",
+          "min": 1,
+          "max": 5,
+          "chance": 0.8
+        }
+      ]
+    }
+  ]
+}

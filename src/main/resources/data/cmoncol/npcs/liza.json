@@ -1,0 +1,31 @@
+{
+    "names": [
+        "Gym Leader Liza"
+    ],
+    "hitbox": "player",
+    "resourceIdentifier": "cmoncol:liza",
+    "interaction": {
+        "type": "dialogue",
+        "dialogue": "cmoncol:tate_and_liza_dialogue"
+    },
+    "battleConfiguration": {
+        "canChallenge": true
+    },
+    "autoHealParty": true,
+    "skill": 5,
+    "party": {
+        "type": "simple",
+        "pokemon": [
+            "lunatone level=42",
+            "solrock level=42"
+        ]
+    },
+    "ai": [
+        {
+            "type": "apply_behaviours",
+            "behaviours": [
+                "cobblemon:core"
+            ]
+        }
+    ]
+}

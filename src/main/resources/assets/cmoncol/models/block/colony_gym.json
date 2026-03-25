@@ -1,13 +1,13 @@
 {
 	"format_version": "1.21.11",
-	"credit": "Generated Custom Gym Desk Model",
+	"credit": "Made with Blockbench",
 	"ambientocclusion": true,
 	"textures": {
 		"0": "minecraft:block/barrel_side",
 		"1": "minecraft:block/blue_concrete",
 		"2": "minecraft:block/black_concrete",
 		"3": "minecraft:block/light_blue_concrete",
-		"particle": "minecraft:block/smooth_quartz"
+		"particle": "minecraft:block/quartz_block_bottom"
 	},
 	"elements": [
 		{

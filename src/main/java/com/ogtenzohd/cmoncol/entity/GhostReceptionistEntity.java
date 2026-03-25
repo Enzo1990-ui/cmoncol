@@ -1,5 +1,9 @@
 package com.ogtenzohd.cmoncol.entity;
 
+import com.ogtenzohd.cmoncol.blocks.custom.gym.GymBlock;
+import com.ogtenzohd.cmoncol.client.ClientHelper;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -10,6 +14,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.damagesource.DamageSource;
 import net.neoforged.fml.loading.FMLEnvironment;
+import org.jetbrains.annotations.NotNull;
 
 public class GhostReceptionistEntity extends PathfinderMob {
 
@@ -29,7 +34,7 @@ public class GhostReceptionistEntity extends PathfinderMob {
     }
 
     @Override
-    public boolean isInvulnerableTo(DamageSource source) {
+    public boolean isInvulnerableTo(@NotNull DamageSource source) {
         return true;
     }
 
@@ -39,23 +44,23 @@ public class GhostReceptionistEntity extends PathfinderMob {
     }
 
     @Override
-    protected void doPush(net.minecraft.world.entity.Entity entityIn) {
+    protected void doPush(@NotNull Entity entityIn) {
     }
 
     @Override
-    protected InteractionResult mobInteract(Player player, InteractionHand hand) {
+    protected @NotNull InteractionResult mobInteract(@NotNull Player player, @NotNull InteractionHand hand) {
         if (this.level().isClientSide && hand == InteractionHand.MAIN_HAND) {
-            net.minecraft.core.BlockPos.betweenClosedStream(
-                    this.blockPosition().offset(-10, -5, -10), 
+            BlockPos.betweenClosedStream(
+                    this.blockPosition().offset(-10, -5, -10),
                     this.blockPosition().offset(10, 5, 10))
-                .filter(pos -> this.level().getBlockState(pos).getBlock() instanceof com.ogtenzohd.cmoncol.blocks.custom.gym.GymBlock)
+                .filter(pos -> this.level().getBlockState(pos).getBlock() instanceof GymBlock)
                 .findFirst()
-                .ifPresent(gymPos -> {
-                    if (FMLEnvironment.dist.isClient()) {
-                        com.ogtenzohd.cmoncol.client.ClientHelper.openGymScreen(gymPos);
-                    }
-                });
-            
+                    .ifPresent(gymPos -> {
+                        if (FMLEnvironment.dist.isClient()) {
+                            ClientHelper.openGymScreen(gymPos);
+                        }
+                    });
+
             return InteractionResult.SUCCESS;
         }
         return super.mobInteract(player, hand);

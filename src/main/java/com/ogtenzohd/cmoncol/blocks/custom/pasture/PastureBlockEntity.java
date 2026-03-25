@@ -19,6 +19,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.phys.AABB;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +57,7 @@ public class PastureBlockEntity extends TileEntityColonyBuilding {
     }
 
     public void toggleRecipe(int slotIndex) {
+        if (this.level == null) return;
         if (slotIndex >= 0 && slotIndex < storedPokemon.size()) {
             PastureSlot slot = storedPokemon.get(slotIndex);
             Pokemon p = new Pokemon();
@@ -70,8 +72,6 @@ public class PastureBlockEntity extends TileEntityColonyBuilding {
             }
         }
     }
-
-    public boolean canAcceptMore(UUID playerUUID) { return storedPokemon.size() < getMaxSlots(); }
 
     @Override
     public void tick() {
@@ -101,20 +101,22 @@ public class PastureBlockEntity extends TileEntityColonyBuilding {
                         }
                     }
 
-                    for (int i = 0; i < storedPokemon.size(); i++) {
-                        spawnPokemonEntity(storedPokemon.get(i), i);
+                    for (PastureSlot pastureSlot : storedPokemon) {
+                        spawnPokemonEntity(pastureSlot);
                     }
                 }
                 return; 
             }
 
-            BlockPos center = getGardenCenter();
-            Map<String, Set<BlockPos>> tagMap = this.getWorldTagNamePosMap();
-            for (int i = 0; i < storedPokemon.size(); i++) {
-                PastureSlot slot = storedPokemon.get(i);
-                if (slot.spawnedEntityUUID != null) {
-                    Entity e = serverLevel.getEntity(slot.spawnedEntityUUID);
-                    if (e != null) checkBounds(e, center, tagMap);
+            if (serverLevel.getGameTime() % 20 == 0) {
+                BlockPos center = getGardenCenter();
+                Map<String, Set<BlockPos>> tagMap = this.getWorldTagNamePosMap();
+
+                for (PastureSlot slot : storedPokemon) {
+                    if (slot.spawnedEntityUUID != null) {
+                        Entity e = serverLevel.getEntity(slot.spawnedEntityUUID);
+                        if (e != null) checkBounds(e, center, tagMap);
+                    }
                 }
             }
         }
@@ -148,7 +150,6 @@ public class PastureBlockEntity extends TileEntityColonyBuilding {
     }
     
     public List<PastureSlot> getStoredPokemon() { return storedPokemon; }
-    public boolean hasPokemon() { return !storedPokemon.isEmpty(); }
 
     private void checkBounds(Entity entity, BlockPos center, Map<String, Set<BlockPos>> tagMap) {
         BlockPos entPos = entity.blockPosition();
@@ -179,45 +180,46 @@ public class PastureBlockEntity extends TileEntityColonyBuilding {
         return this.getBlockPos(); 
     }
 
-    private void spawnPokemonEntity(PastureSlot slot, int index) {
+    private void spawnPokemonEntity(PastureSlot slot) {
         if (this.level instanceof net.minecraft.server.level.ServerLevel serverLevel) {
             CompoundTag dummyData = slot.pokemonNBT.copy();
-            dummyData.remove("owner"); 
+            dummyData.remove("owner");
             Pokemon mon = new Pokemon();
-            mon.loadFromNBT(this.level.registryAccess(), dummyData);
+            mon.loadFromNBT(serverLevel.registryAccess(), dummyData);
             EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.get(ResourceLocation.parse("cobblemon:pokemon"));
-            if (type != null) {
-                Entity entity = type.create(serverLevel);
-                if (entity instanceof PokemonEntity pokeEntity) {
-                    pokeEntity.setPokemon(mon);
-                    BlockPos center = getGardenCenter();
-                    pokeEntity.setPos(center.getX() + 0.5, center.getY() + 1.0, center.getZ() + 0.5);
-                    pokeEntity.restrictTo(center, 12); 
-                    
-                    pokeEntity.getPokemon().setUuid(UUID.randomUUID());
-                    pokeEntity.getTags().add("cmoncol_dummy");
-                    pokeEntity.getTags().add(getBuildingTag());
-                    pokeEntity.setInvulnerable(true); 
-                    pokeEntity.setPersistenceRequired(); 
-                    
-                    pokeEntity.setCustomName(Component.literal(slot.ownerName + "'s " + pokeEntity.getPokemon().getDisplayName(true).getString()));
-                    pokeEntity.setCustomNameVisible(true);
-                    
-                    serverLevel.addFreshEntity(pokeEntity);
-                    slot.spawnedEntityUUID = pokeEntity.getUUID();
-                    this.setChanged();
-                }
+            Entity entity = type.create(serverLevel);
+            if (entity instanceof PokemonEntity pokeEntity) {
+                pokeEntity.setPokemon(mon);
+                BlockPos center = getGardenCenter();
+                pokeEntity.setPos(center.getX() + 0.5, center.getY() + 1.0, center.getZ() + 0.5);
+                pokeEntity.restrictTo(center, 12);
+
+                pokeEntity.getPokemon().setUuid(UUID.randomUUID());
+                pokeEntity.getTags().add("cmoncol_dummy");
+                pokeEntity.getTags().add(getBuildingTag());
+                pokeEntity.setInvulnerable(true);
+                pokeEntity.setPersistenceRequired();
+
+                pokeEntity.setCustomName(Component.literal(slot.ownerName + "'s " + pokeEntity.getPokemon().getDisplayName(true).getString()));
+                pokeEntity.setCustomNameVisible(true);
+
+                serverLevel.addFreshEntity(pokeEntity);
+                slot.spawnedEntityUUID = pokeEntity.getUUID();
+                this.setChanged();
             }
         }
     }
 
     public void addPokemon(UUID owner, String ownerName, CompoundTag nbt) {
-        if (storedPokemon.size() < getMaxSlots()) {
+        if (canAcceptMore(owner)) {
             PastureSlot newSlot = new PastureSlot(owner, ownerName, nbt);
             storedPokemon.add(newSlot);
-            spawnPokemonEntity(newSlot, storedPokemon.size() - 1);
+            spawnPokemonEntity(newSlot);
+
             this.setChanged();
-            if (level != null && !level.isClientSide) level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
+            if (level != null && !level.isClientSide) {
+                level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
+            }
         }
     }
 
@@ -244,7 +246,9 @@ public class PastureBlockEntity extends TileEntityColonyBuilding {
                     mon.setUuid(UUID.randomUUID()); 
                     com.cobblemon.mod.common.api.storage.party.PlayerPartyStore party = com.cobblemon.mod.common.Cobblemon.INSTANCE.getStorage().getParty(sPlayer);
                     com.cobblemon.mod.common.api.storage.pc.PCStore pc = com.cobblemon.mod.common.Cobblemon.INSTANCE.getStorage().getPC(sPlayer);
-                    if (party != null && !party.add(mon)) if (pc != null) pc.add(mon);
+                    if (!party.add(mon)) {
+                        pc.add(mon);
+                    }
                 }
             }
             this.storedPokemon.clear();
@@ -252,8 +256,33 @@ public class PastureBlockEntity extends TileEntityColonyBuilding {
         }
     }
 
+    public boolean canAcceptMore(UUID playerUUID) {
+        long playerPokemonCount = storedPokemon.stream()
+                .filter(slot -> slot.ownerUUID.equals(playerUUID))
+                .count();
+        return playerPokemonCount < getMaxSlots();
+    }
+
     @Override
-    public void saveAdditional(CompoundTag tag, HolderLookup.Provider provider) {
+    public @NotNull CompoundTag getUpdateTag(HolderLookup.@NotNull Provider provider) {
+        CompoundTag tag = super.getUpdateTag(provider);
+        if (tag.contains("PastureSlots")) {
+            ListTag slotsTag = tag.getList("PastureSlots", Tag.TAG_COMPOUND);
+            for (int i = 0; i < slotsTag.size(); i++) {
+                CompoundTag slotData = slotsTag.getCompound(i);
+                slotData.remove("SnapshotNBT");
+            }
+        }
+        return tag;
+    }
+
+    @Override
+    public net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket.create(this);
+    }
+
+    @Override
+    public void saveAdditional(@NotNull CompoundTag tag, HolderLookup.@NotNull Provider provider) {
         super.saveAdditional(tag, provider);
         ListTag slotsTag = new ListTag();
         for (PastureSlot slot : storedPokemon) {
@@ -269,7 +298,7 @@ public class PastureBlockEntity extends TileEntityColonyBuilding {
     }
 
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
+    public void loadAdditional(@NotNull CompoundTag tag, HolderLookup.@NotNull Provider provider) {
         super.loadAdditional(tag, provider);
         storedPokemon.clear();
         if (tag.contains("PastureSlots")) {

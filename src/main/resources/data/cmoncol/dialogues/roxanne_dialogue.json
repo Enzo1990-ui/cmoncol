@@ -1,0 +1,47 @@
+{
+    "initializationAction": "(q.npc.is_in_battle_with(q.player) || !q.npc.is_doing_activity('minecraft:idle', 'cobblemon:battling')) ? q.dialogue.close()",
+    "speakers": {
+        "npc": {
+            "name": "Gym Leader Roxanne",
+            "face": "q.npc.face(false);"
+        },
+        "player": {
+            "face": "q.player.face();",
+            "name": {
+                "type": "expression",
+                "expression": "q.player.username"
+            }
+        }
+    },
+    "pages": [
+        {
+            "id": "npc-chat",
+            "speaker": "npc",
+            "lines": [
+                "Hello, I am Roxanne, the Rustboro Pokemon Gym Leader. I became a Gym Leader so that I might apply what I learned at the Pokemon Trainer's School in battle. Would you kindly demonstrate how you battle, and with which Pokemon?"
+            ],
+            "input": {
+                "type": "option",
+                "vertical": false,
+                "options": [
+                    {
+                        "text": "Let's Battle!",
+                        "value": "battle",
+                        "action": [
+                            "q.dialogue.close();",
+                            "q.npc.start_battle(q.player, 'single');"
+                        ],
+                        "isSelectable": "c.npc.can_battle;"
+                    },
+                    {
+                        "text": "Cancel",
+                        "value": "cancel",
+                        "action": [
+                            "q.dialogue.close()"
+                        ]
+                    }
+                ]
+            }
+        }
+    ]
+}

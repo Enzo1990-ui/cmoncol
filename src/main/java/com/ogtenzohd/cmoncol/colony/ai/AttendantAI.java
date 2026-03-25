@@ -113,21 +113,19 @@ public class AttendantAI extends AbstractEntityAIBasic<AttendantJob, DaycareBuil
                 
                 if (areCompatible(monA, monB)) {
                     if (entity.getRandom().nextDouble() <= CCConfig.INSTANCE.eggGenerationChance.get()) {
-                        
-                        Pokemon child = createOffspring(monA, monB);
-                        if (child != null) {
-                            ItemStack eggStack = ItemPokemonEgg.createEgg(child);
-                            CompoundTag childNBT = child.saveToNBT(registryAccess, new CompoundTag());
-                            ItemPokemonEgg.setPokemonData(eggStack, childNBT);
-                            job.getColony().getWorld().getServer().getPlayerList().getPlayers().forEach(player -> {
-                                if (player.getUUID().equals(slotA.ownerUUID)) {
-                                    player.sendSystemMessage(Component.literal("§a[Daycare] §fYour Pokemon have produced an egg!"));
-                                }
-                            });
-                            if (insertItemIntoBuilding(eggStack, entity)) {
-                                slotA.timeInDaycare = 0; 
-                                slotB.timeInDaycare = 0;
+
+                        Pokemon child = createOffspring(monA, monB, slotA.ownerUUID);
+                        ItemStack eggStack = ItemPokemonEgg.createEgg(child);
+                        CompoundTag childNBT = child.saveToNBT(registryAccess, new CompoundTag());
+                        ItemPokemonEgg.setPokemonData(eggStack, childNBT);
+                        Objects.requireNonNull(job.getColony().getWorld().getServer()).getPlayerList().getPlayers().forEach(player -> {
+                            if (player.getUUID().equals(slotA.ownerUUID)) {
+                                player.sendSystemMessage(Component.literal("§a[Daycare] §fYour Pokemon have produced an egg!"));
                             }
+                        });
+                        if (insertItemIntoBuilding(eggStack, entity)) {
+                            slotA.timeInDaycare = 0;
+                            slotB.timeInDaycare = 0;
                         }
                     }
                     return;
@@ -136,10 +134,10 @@ public class AttendantAI extends AbstractEntityAIBasic<AttendantJob, DaycareBuil
         }
     }
 
-    private Pokemon createOffspring(Pokemon parentA, Pokemon parentB) {
+    private Pokemon createOffspring(Pokemon parentA, Pokemon parentB, java.util.UUID ownerUUID) {
         Pokemon nonDitto = parentA.getSpecies().getName().equalsIgnoreCase("ditto") ? parentB : parentA;
         Pokemon mother = (parentA.getGender() == Gender.FEMALE || parentB.getSpecies().getName().equalsIgnoreCase("ditto")) ? parentA : parentB;
-        
+
         com.cobblemon.mod.common.pokemon.Species baseSpecies = nonDitto.getSpecies();
         while (baseSpecies.getPreEvolution() != null) {
             baseSpecies = baseSpecies.getPreEvolution().getSpecies();
@@ -148,13 +146,13 @@ public class AttendantAI extends AbstractEntityAIBasic<AttendantJob, DaycareBuil
 
         String itemA = getHeldItemId(parentA);
         String itemB = getHeldItemId(parentB);
-        
+
         CCConfig.BreedingMode mode = CCConfig.INSTANCE.breedingMode.get();
         boolean isMasuda = !Objects.equals(parentA.getOriginalTrainer(), parentB.getOriginalTrainer());
-        
+
         double baseShinyRate = 1.0 / 4096.0;
         int shinyRolls = isMasuda ? 6 : 1;
-        
+
         if (mode == CCConfig.BreedingMode.CLASSIC) {
             baseShinyRate = 1.0 / 8192.0;
             shinyRolls = isMasuda ? 5 : 1;
@@ -165,8 +163,12 @@ public class AttendantAI extends AbstractEntityAIBasic<AttendantJob, DaycareBuil
         shinyRolls += getShinyItemBoost(itemA);
         shinyRolls += getShinyItemBoost(itemB);
 
+        if (ownerUUID != null && com.ogtenzohd.cmoncol.util.CmoncolPerks.hasVIPPerks(ownerUUID)) {
+            shinyRolls += 5;
+        }
+
         boolean forceShiny = false;
-        
+
         if (mode == CCConfig.BreedingMode.EASY && (itemA.equals("minecraft:nether_star") || itemB.equals("minecraft:nether_star"))) {
             forceShiny = true;
         } else {
@@ -184,7 +186,7 @@ public class AttendantAI extends AbstractEntityAIBasic<AttendantJob, DaycareBuil
 
         boolean aHasEverstone = itemA.equals("minecraft:everstone");
         boolean bHasEverstone = itemB.equals("minecraft:everstone");
-        
+
         if (mode == CCConfig.BreedingMode.EASY) {
             child.setNature((Math.random() < 0.5) ? parentA.getNature() : parentB.getNature());
         } else if (mode == CCConfig.BreedingMode.CLASSIC) {
@@ -197,7 +199,7 @@ public class AttendantAI extends AbstractEntityAIBasic<AttendantJob, DaycareBuil
         }
 
         int inheritedStatsCount = 3;
-        
+
         if (mode == CCConfig.BreedingMode.EASY) {
             inheritedStatsCount = 5;
         } else if (mode == CCConfig.BreedingMode.MODERN) {
@@ -207,10 +209,10 @@ public class AttendantAI extends AbstractEntityAIBasic<AttendantJob, DaycareBuil
         }
 
         List<Stat> availableStats = new ArrayList<>(Arrays.asList(Stats.HP, Stats.ATTACK, Stats.DEFENCE, Stats.SPECIAL_ATTACK, Stats.SPECIAL_DEFENCE, Stats.SPEED));
-        
+
         handlePowerItem(itemA, parentA, child, availableStats);
         handlePowerItem(itemB, parentB, child, availableStats);
-        
+
         Collections.shuffle(availableStats);
         for (int i = 0; i < Math.min(inheritedStatsCount, availableStats.size()); i++) {
             Stat stat = availableStats.get(i);
@@ -219,11 +221,9 @@ public class AttendantAI extends AbstractEntityAIBasic<AttendantJob, DaycareBuil
         }
 
         if (mode != CCConfig.BreedingMode.CLASSIC) {
-            if (mother.getCaughtBall() != null) {
-                String ballName = mother.getCaughtBall().toString();
-                if (!ballName.contains("master_ball") && !ballName.contains("cherish_ball")) {
-                    child.setCaughtBall(mother.getCaughtBall());
-                }
+            String ballName = mother.getCaughtBall().toString();
+            if (!ballName.contains("master_ball") && !ballName.contains("cherish_ball")) {
+                child.setCaughtBall(mother.getCaughtBall());
             }
         }
 
@@ -232,29 +232,39 @@ public class AttendantAI extends AbstractEntityAIBasic<AttendantJob, DaycareBuil
 
     private String getHeldItemId(Pokemon pokemon) {
         ItemStack item = pokemon.heldItem();
-        if (item == null || item.isEmpty()) return "";
+        if (item.isEmpty()) return "";
         return BuiltInRegistries.ITEM.getKey(item.getItem()).toString();
     }
 
     private int getShinyItemBoost(String itemId) {
         switch (itemId) {
-            case "minecraft:amethyst_shard": return 2;
-            case "minecraft:emerald": return 4;
-            case "minecraft:diamond": return 8;
-            case "minecraft:nether_star": return 15;
-            default: return 0;
+            case "minecraft:amethyst_shard" -> {
+                return 2;
+            }
+            case "minecraft:emerald" -> {
+                return 4;
+            }
+            case "minecraft:diamond" -> {
+                return 8;
+            }
+            case "minecraft:nether_star" -> {
+                return 15;
+            }
+            default -> {
+                return 0;
+            }
         }
     }
 
     private void handlePowerItem(String itemId, Pokemon parent, Pokemon child, List<Stat> availableStats) {
         Stat targetStat = null;
         switch (itemId) {
-            case "cobblemon:power_weight": targetStat = Stats.HP; break;
-            case "cobblemon:power_bracer": targetStat = Stats.ATTACK; break;
-            case "cobblemon:power_belt": targetStat = Stats.DEFENCE; break;
-            case "cobblemon:power_lens": targetStat = Stats.SPECIAL_ATTACK; break;
-            case "cobblemon:power_band": targetStat = Stats.SPECIAL_DEFENCE; break;
-            case "cobblemon:power_anklet": targetStat = Stats.SPEED; break;
+            case "cobblemon:power_weight" -> targetStat = Stats.HP;
+            case "cobblemon:power_bracer" -> targetStat = Stats.ATTACK;
+            case "cobblemon:power_belt" -> targetStat = Stats.DEFENCE;
+            case "cobblemon:power_lens" -> targetStat = Stats.SPECIAL_ATTACK;
+            case "cobblemon:power_band" -> targetStat = Stats.SPECIAL_DEFENCE;
+            case "cobblemon:power_anklet" -> targetStat = Stats.SPEED;
         }
         
         if (targetStat != null && availableStats.contains(targetStat)) {

@@ -1,0 +1,44 @@
+{
+  "speakers": {
+    "npc": {
+      "face": "q.npc.face(false);"
+    },
+    "player": {
+      "face": "q.player.face();",
+      "name": {
+        "type": "expression",
+        "expression": "q.player.username"
+      }
+    }
+  },
+  "pages": [
+    {
+      "id": "start",
+      "speaker": "npc",
+      "lines": [
+        "I supported the mod so now I get to battle you, isn't that great."
+      ],
+      "input": {
+        "type": "option",
+        "vertical": false,
+        "options": [
+          {
+            "text": "Let's Battle!",
+            "value": "battle",
+            "action": [
+              "q.dialogue.close();",
+              "q.npc.start_battle(q.player, 'single');"
+            ]
+          },
+          {
+            "text": "Not right now",
+            "value": "cancel",
+            "action": [
+              "q.dialogue.close();"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

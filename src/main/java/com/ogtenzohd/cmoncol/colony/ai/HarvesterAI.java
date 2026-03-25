@@ -30,11 +30,10 @@ public class HarvesterAI extends AbstractEntityAIBasic<HarvesterJob, HarvesterBu
     private int workTimer = 0;
     
     private static final String[] COLORS = {"red", "pink", "yellow", "blue", "green", "white", "black"};
-    private int colorIndex = 0; 
-    private int consecutiveHarvests = 0; 
-    private int cooldownTimer = 0; 
+    private int colorIndex = 0;
+    private int cooldownTimer = 0;
 
-    private List<BlockPos> apricornCache = new ArrayList<>();
+    private final List<BlockPos> apricornCache = new ArrayList<>();
     private long lastCacheUpdate = 0;
 	private record HarvestTask(BlockPos fruitPos, BlockPos standPos) {}
     private final List<HarvestTask> shoppingList = new ArrayList<>();
@@ -44,11 +43,12 @@ public class HarvesterAI extends AbstractEntityAIBasic<HarvesterJob, HarvesterBu
     @Override 
     public Class<HarvesterBuilding> getExpectedBuildingClass() { return HarvesterBuilding.class; }
 
+    @SuppressWarnings("ConstantValue")
     @Override
     public void tick() {
-        if (job.getWorkBuilding() == null || !job.getCitizen().getEntity().isPresent()) return;
+        if (job.getWorkBuilding() == null || job.getCitizen().getEntity().isEmpty()) return;
         LivingEntity entity = job.getCitizen().getEntity().get();
-        if (!(entity instanceof Mob mob)) return; 
+        if (!(entity instanceof Mob mob)) return;
 
         BlockPos buildingPos = job.getWorkBuilding().getPosition();
 
@@ -83,12 +83,12 @@ public class HarvesterAI extends AbstractEntityAIBasic<HarvesterJob, HarvesterBu
                     return;
                 }
 
-                HarvestTask currentTask = shoppingList.get(0);
+                HarvestTask currentTask = shoppingList.getFirst();
                 targetApricorn = currentTask.fruitPos();
                 BlockPos standAt = currentTask.standPos();
                 
                 if (!isValidApricorn(entity.level().getBlockState(targetApricorn)) || !isApricornMature(entity.level(), targetApricorn)) {
-                    shoppingList.remove(0);
+                    shoppingList.removeFirst();
                     return; 
                 }
 
@@ -113,7 +113,7 @@ public class HarvesterAI extends AbstractEntityAIBasic<HarvesterJob, HarvesterBu
                     entity.swing(InteractionHand.MAIN_HAND);
                     harvestApricorn(entity, targetApricorn);
                     
-                    shoppingList.remove(0);
+                    shoppingList.removeFirst();
                     targetApricorn = null;
                     
                     currentState = shoppingList.isEmpty() ? State.DEPOSIT : State.MOVE_TO;
@@ -145,6 +145,7 @@ public class HarvesterAI extends AbstractEntityAIBasic<HarvesterJob, HarvesterBu
         }
 	}
 
+    @SuppressWarnings("deprecation")
     private BlockPos findGroundBelow(net.minecraft.world.level.Level level, BlockPos target) {
         BlockPos.MutableBlockPos pos = target.mutable().move(0, -1, 0);
         for (int i = 0; i < 5; i++) {
@@ -154,16 +155,6 @@ public class HarvesterAI extends AbstractEntityAIBasic<HarvesterJob, HarvesterBu
             pos.move(0, -1, 0);
         }
         return target.below(); 
-    }
-	
-	private boolean isInventoryFull(LivingEntity entity) {
-        IItemHandler inv = entity.getCapability(Capabilities.ItemHandler.ENTITY, null);
-        if (inv == null) return false;
-        
-        for (int i = 0; i < inv.getSlots(); i++) {
-            if (inv.getStackInSlot(i).isEmpty()) return false;
-        }
-        return true;
     }
 
     private void switchColor() {
@@ -220,15 +211,9 @@ public class HarvesterAI extends AbstractEntityAIBasic<HarvesterJob, HarvesterBu
             && !id.getPath().contains("sapling");
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean isValidApricorn(BlockState state) {
         return isColorApricorn(state, COLORS[colorIndex]);
-    }
-
-    private BlockPos findMatureApricorn(LivingEntity entity) {
-        for (BlockPos pos : apricornCache) {
-            if (isApricornMature(entity.level(), pos)) return pos;
-        }
-        return null;
     }
 
     private boolean isApricornMature(net.minecraft.world.level.Level level, BlockPos pos) {

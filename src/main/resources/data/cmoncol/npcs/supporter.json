@@ -1,0 +1,18 @@
+{
+  "resourceIdentifier": "cobblemon:player",
+  "names": ["VIP Supporter"],
+  "hitbox": "player",
+  "modelScale": 1.0,
+  "party": { "type": "simple", "pokemon": [] },
+  "battleConfiguration": { "canChallenge": true },
+  "interaction": {
+    "type": "dialogue",
+    "dialogue": "cmoncol:supporter_battle"
+  },
+  "ai": [ 
+    { 
+      "type": "apply_behaviours", 
+      "behaviours": [ "cobblemon:core", "cobblemon:player_textured" ] 
+    } 
+  ]
+}

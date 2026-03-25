@@ -56,5 +56,6 @@
       "geodude level=12",
       "onix level=14"
     ]
-  }
+  },
+  "ai": [ { "type": "apply_behaviours", "behaviours": [ "cobblemon:core" ] } ]
 }

@@ -8,7 +8,6 @@ import org.jetbrains.annotations.NotNull;
 
 public class PokemonGuardBuilding extends AbstractBuildingGuards {
 
-    private static final int MAX_LEVEL = 1;
     private static final int BONUS_HP_SINGLE_GUARD = 30;
 
     public PokemonGuardBuilding(@NotNull final IColony c, final BlockPos l) {
@@ -23,9 +22,7 @@ public class PokemonGuardBuilding extends AbstractBuildingGuards {
 
     @Override
     public int getClaimRadius(final int newLevel) {
-        switch (newLevel) {
-            default: return 5;
-        }
+        return 5;
     }
 	
 	@Override

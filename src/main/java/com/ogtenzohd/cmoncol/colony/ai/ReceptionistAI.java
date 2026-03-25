@@ -4,11 +4,8 @@ import com.minecolonies.core.entity.ai.workers.AbstractEntityAIBasic;
 import com.ogtenzohd.cmoncol.colony.buildings.GymBuilding;
 import com.ogtenzohd.cmoncol.colony.job.GymJob;
 import com.ogtenzohd.cmoncol.entity.GhostReceptionistEntity;
-import com.ogtenzohd.cmoncol.registration.CmoncolReg;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 
 import java.util.UUID;
@@ -48,7 +45,7 @@ public class ReceptionistAI extends AbstractEntityAIBasic<GymJob, GymBuilding> {
 
                 case HIDE:
                     if (ghostUUID == null || level.getEntity(ghostUUID) == null) {
-                        cleanUpOldGhosts(entity, (ServerLevel)level);
+                        cleanUpOldGhosts(entity, level);
                         
                         GhostReceptionistEntity ghost = com.ogtenzohd.cmoncol.registration.CmoncolReg.GHOST_RECEPTIONIST.get().create(level);
                         if (ghost != null) {
@@ -65,7 +62,7 @@ public class ReceptionistAI extends AbstractEntityAIBasic<GymJob, GymBuilding> {
                     }
 
                     if (entity.distanceToSqr(buildingPos.getX(), buildingPos.getY(), buildingPos.getZ()) > 25) {
-                        cleanUpOldGhosts(entity, (ServerLevel)level);
+                        cleanUpOldGhosts(entity, level);
                         this.ghostUUID = null;
                         currentState = State.GO_TO_DESK;
                     }

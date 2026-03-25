@@ -48,6 +48,7 @@ public class DaycareBlock extends AbstractBlockHut<DaycareBlock> {
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         if (type == CmoncolReg.DAYCARE_BE.get()) {
+            //noinspection unchecked
             return (BlockEntityTicker<T>) (BlockEntityTicker<DaycareBlockEntity>) (l, p, s, be) -> be.tick();
         }
         return null;

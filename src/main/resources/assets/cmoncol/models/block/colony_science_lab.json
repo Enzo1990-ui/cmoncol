@@ -1,6 +1,6 @@
 {
 	"format_version": "1.21.11",
-	"credit": "Generated Custom Science Lab Model",
+	"credit": "Made with Blockbench",
 	"ambientocclusion": true,
 	"textures": {
 		"0": "minecraft:block/iron_block",

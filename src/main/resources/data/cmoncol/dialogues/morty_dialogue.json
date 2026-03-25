@@ -1,0 +1,47 @@
+{
+    "initializationAction": "(q.npc.is_in_battle_with(q.player) || !q.npc.is_doing_activity('minecraft:idle', 'cobblemon:battling')) ? q.dialogue.close()",
+    "speakers": {
+        "npc": {
+            "name": "Gym Leader Morty",
+            "face": "q.npc.face(false);"
+        },
+        "player": {
+            "face": "q.player.face();",
+            "name": {
+                "type": "expression",
+                "expression": "q.player.username"
+            }
+        }
+    },
+    "pages": [
+        {
+            "id": "npc-chat",
+            "speaker": "npc",
+            "lines": [
+                "Good of you to have come. Here in Ecruteak, Pokemon have been revered. It's said that a legendary Pokemon will appear to the truly powerful trainers. I believed that tale, so I have secretly trained here all my life."
+            ],
+            "input": {
+                "type": "option",
+                "vertical": false,
+                "options": [
+                    {
+                        "text": "Let's Battle!",
+                        "value": "battle",
+                        "action": [
+                            "q.dialogue.close();",
+                            "q.npc.start_battle(q.player, 'single');"
+                        ],
+                        "isSelectable": "c.npc.can_battle;"
+                    },
+                    {
+                        "text": "Cancel",
+                        "value": "cancel",
+                        "action": [
+                            "q.dialogue.close()"
+                        ]
+                    }
+                ]
+            }
+        }
+    ]
+}

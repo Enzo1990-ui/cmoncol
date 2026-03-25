@@ -1,0 +1,23 @@
+{
+  "type": "recipe",
+  "crafter": "pokeball_workshop_crafting",
+  "inputs": [
+	{
+	  "count": 2,
+      "id": "cobblemon:black_apricorn"
+    },
+    {
+      "count": 2,
+      "id": "cobblemon:blue_apricorn"
+    },
+    {
+      "id": "minecraft:iron_ingot"
+    }
+  ],
+  "intermediate": "minecraft:air",
+  "min-building-level": 3,
+  "result": {
+    "count": 4,
+    "id": "cobblemon:heavy_ball"
+  }
+}

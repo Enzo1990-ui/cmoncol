@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/ldtteam/BlockUI/version/main/src/main/resources/assets/blockui/gui/block_ui.xsd"
+        size="190 244"
+        lightbox="true">
+    
+    <layout source="minecolonies:gui/layouthuts/layouthutpageactions.xml"/>
+    <image source="minecolonies:textures/gui/builderhut/builder_paper.png" size="190 244" pos="0 0"/>
+
+    <text id="title" size="190 12" pos="40 20" color="black" label="Wonder Trade Centre"/>
+
+    <text id="statusLabel" size="150 10" pos="20 50" color="black" label="Status: Waiting for Pokemon"/>
+    
+    <button id="claimBtn" size="150 20" pos="20 70" label="Claim Wonder Trade" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black" enabled="false"/>
+
+    <text id="partySelectionText" size="150 10" pos="20 115" color="black" label="Select Pokemon to Trade:"/>
+    
+    <button id="prevPartyBtn" size="20 20" pos="20 130" label="&lt;" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+    <text id="partySelectionLabel" size="100 10" pos="45 135" color="black" label="Slot 1: Empty"/>
+    <button id="nextPartyBtn" size="20 20" pos="150 130" label="&gt;" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+    
+    <button id="depositBtn" size="150 20" pos="20 160" label="Start Wonder Trade" source="minecolonies:textures/gui/builderhut/builder_button_medium.png" color="black"/>
+</window>

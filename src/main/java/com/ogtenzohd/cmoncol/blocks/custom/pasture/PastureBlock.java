@@ -52,13 +52,14 @@ public class PastureBlock extends AbstractBlockHut<PastureBlock> {
         }
         return null;
     }
-	
-	@Override
+
+    @Override
     public void onRemove(net.minecraft.world.level.block.state.BlockState state, net.minecraft.world.level.Level level, net.minecraft.core.BlockPos pos, net.minecraft.world.level.block.state.BlockState newState, boolean isMoving) {
         if (!state.is(newState.getBlock())) {
             net.minecraft.world.level.block.entity.BlockEntity be = level.getBlockEntity(pos);
-            if (be instanceof com.ogtenzohd.cmoncol.blocks.entity.CobblemonProxyBlockEntity proxy) {
-                proxy.emergencyRecoverPokemon(); // Rescue the Pokemon!
+
+            if (be instanceof PastureBlockEntity pasture) {
+                pasture.emergencyRecoverAllPokemon();
             }
         }
         super.onRemove(state, level, pos, newState, isMoving);

@@ -10,6 +10,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import com.ogtenzohd.cmoncol.CobblemonColonies;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.NotNull;
 
 public record GymChallengePacket(BlockPos gymPos, String leaderName) implements CustomPacketPayload {
 
@@ -29,7 +30,7 @@ public record GymChallengePacket(BlockPos gymPos, String leaderName) implements 
     }
 
     @Override
-    public CustomPacketPayload.Type<? extends CustomPacketPayload> type() {
+    public CustomPacketPayload.@NotNull Type<? extends CustomPacketPayload> type() {
         return TYPE;
     }
 
@@ -41,7 +42,7 @@ public record GymChallengePacket(BlockPos gymPos, String leaderName) implements 
                     String status = gym.checkCanBattle(data.leaderName());
 
                     if (status.equals("yes")) { //screw true or false i want it to be yes..
-                        gym.loadGymArena(player.serverLevel(), data.gymPos(), data.leaderName());
+                        gym.loadGymArena(player.serverLevel(), data.leaderName());
                         player.sendSystemMessage(Component.literal("§aThe Gym Arena is shifting..."));
                     } else {
                         player.sendSystemMessage(Component.literal("§c" + status));

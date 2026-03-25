@@ -102,14 +102,14 @@ public class TrainerAcadamyProxyWindow extends AbstractModuleWindow<TrainerAcada
             if (player != null && level != null) {
                 com.cobblemon.mod.common.api.storage.party.PlayerPartyStore party = 
                     com.cobblemon.mod.common.Cobblemon.INSTANCE.getStorage().getParty(player.getUUID(), level.registryAccess());
-                if (party != null) {
-                    com.cobblemon.mod.common.pokemon.Pokemon p = party.get(index);
-                    if (p != null) {
-                        return p.getDisplayName(true).getString();
-                    }
+                com.cobblemon.mod.common.pokemon.Pokemon p = party.get(index);
+                if (p != null) {
+                    return p.getDisplayName(true).getString();
                 }
             }
-        } catch(Exception e) {}
+        } catch(Exception e) {
+            throw new RuntimeException(e);
+        }
         return "Empty";
     }
 }

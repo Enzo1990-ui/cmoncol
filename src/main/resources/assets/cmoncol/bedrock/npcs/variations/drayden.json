@@ -1,0 +1,13 @@
+{
+    "name": "cmoncol:drayden",
+    "order": 0,
+    "variations": [
+        {
+            "aspects": [],
+            "poser": "cobblemon:standard",
+            "model": "cobblemon:steve.geo",
+            "texture": "cmoncol:textures/entity/npc/drayden.png",
+            "layers": []
+        }
+    ]
+}

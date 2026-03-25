@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "BBB",
+    "ISI",
+    "BHB"
+  ],
+  "key": {
+    "B": { "item": "minecraft:iron_block" },
+    "I": { "item": "cobblemon:poke_ball" },
+    "S": { "item": "structurize:sceptergold" },
+	"H": { "item": "minecraft:light_blue_wool"}
+  },
+  "result": {
+    "id": "cmoncol:colony_wonder_trade"
+  }
+}

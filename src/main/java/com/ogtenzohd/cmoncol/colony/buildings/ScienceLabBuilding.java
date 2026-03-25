@@ -25,6 +25,4 @@ public class ScienceLabBuilding extends AbstractBuilding {
         return "Prehistoric Birch Tree";
     }
 
-    public void cycleSite() {
-    }
 }

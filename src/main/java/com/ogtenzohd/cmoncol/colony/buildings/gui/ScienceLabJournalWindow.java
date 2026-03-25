@@ -1,7 +1,6 @@
 package com.ogtenzohd.cmoncol.colony.buildings.gui;
 
 import com.ldtteam.blockui.Pane;
-import com.ldtteam.blockui.controls.Button;
 import com.ldtteam.blockui.controls.Text;
 import com.ldtteam.blockui.views.ScrollingList;
 import com.minecolonies.core.client.gui.AbstractModuleWindow;
@@ -98,7 +97,7 @@ public class ScienceLabJournalWindow extends AbstractModuleWindow<ScienceLabJour
         if (journalList != null) {
             String rawText = pages.isEmpty() ? "No expeditions recorded yet. Send the Scientist to work!" : pages.get(currentPage);
             
-            List<String> textLines = wrapText(rawText, 145);
+            List<String> textLines = wrapText(rawText);
 
             journalList.setDataProvider(new ScrollingList.DataProvider() {
                 @Override
@@ -119,7 +118,7 @@ public class ScienceLabJournalWindow extends AbstractModuleWindow<ScienceLabJour
         }
     }
 
-    private List<String> wrapText(String text, int maxWidth) {
+    private List<String> wrapText(String text) {
         List<String> lines = new ArrayList<>();
         String[] words = text.replace("\n", " \n ").split(" "); 
         StringBuilder currentLine = new StringBuilder();
@@ -133,14 +132,14 @@ public class ScienceLabJournalWindow extends AbstractModuleWindow<ScienceLabJour
                 continue;
             }
 
-            if (font.width(currentLine.toString() + word) < maxWidth) {
+            if (font.width(currentLine + word) < 145) {
                 currentLine.append(word).append(" ");
             } else {
                 lines.add(currentLine.toString().trim());
                 currentLine = new StringBuilder(word + " ");
             }
         }
-        if (currentLine.length() > 0) {
+        if (!currentLine.isEmpty()) {
             lines.add(currentLine.toString().trim());
         }
         return lines;

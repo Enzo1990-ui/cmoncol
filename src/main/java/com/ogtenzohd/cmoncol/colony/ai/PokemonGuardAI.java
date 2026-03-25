@@ -1,29 +1,25 @@
 package com.ogtenzohd.cmoncol.colony.ai;
 
-import com.minecolonies.api.crafting.ItemStorage;
-import com.minecolonies.api.equipment.ModEquipmentTypes;
+import com.cobblemon.mod.common.api.pokemon.PokemonProperties;
+import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
+import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.minecolonies.api.entity.ai.combat.threat.IThreatTableEntity;
+import com.minecolonies.api.equipment.ModEquipmentTypes;
 import com.minecolonies.core.entity.ai.workers.guard.AbstractEntityAIGuard;
 import com.minecolonies.core.entity.ai.workers.guard.KnightCombatAI;
 import com.minecolonies.core.entity.citizen.EntityCitizen;
-import com.ogtenzohd.cmoncol.colony.job.PokemonGuardJob;
 import com.ogtenzohd.cmoncol.colony.buildings.PokemonGuardBuilding;
+import com.ogtenzohd.cmoncol.colony.job.PokemonGuardJob;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.particles.ParticleTypes;
-import com.cobblemon.mod.common.pokemon.Pokemon;
-import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
-import com.cobblemon.mod.common.api.pokemon.PokemonProperties;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.EnumSet;
-import java.util.List;
 import java.util.UUID;
 
 public class PokemonGuardAI extends AbstractEntityAIGuard<PokemonGuardJob, PokemonGuardBuilding> {
@@ -42,21 +38,12 @@ public class PokemonGuardAI extends AbstractEntityAIGuard<PokemonGuardJob, Pokem
         return PokemonGuardBuilding.class; 
     }
 
-	//i dont want them walking round with a sword so fake it!
-    @Override
-    public boolean hasTool() {
-        return true;
-    }
-
-    @NotNull
-    @Override
-    protected List<ItemStorage> itemsNiceToHave() {
-        return new ArrayList<>();
-    }
 
     @Override
     public void tick() {
-        if (job.getWorkBuilding() == null || job.getColony().getWorld() == null || worker == null) return;
+        if (job.getWorkBuilding() == null || job.getColony().getWorld() == null) {
+            return;
+        }
 
         super.tick(); 
 
@@ -75,23 +62,21 @@ public class PokemonGuardAI extends AbstractEntityAIGuard<PokemonGuardJob, Pokem
     }
 
     private void spawnPartner(LivingEntity guard, ServerLevel level) {
-        Pokemon mon = PokemonProperties.Companion.parse("species=growlithe level=30").create();
+        Pokemon mon = PokemonProperties.Companion.parse("species=growlithe level=30 uncatchable=true").create();
         EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.get(ResourceLocation.parse("cobblemon:pokemon"));
-        
-        if (type != null) {
-            Entity newEntity = type.create(level);
-            if (newEntity instanceof PokemonEntity pokeEntity) {
-                pokeEntity.setPokemon(mon);
-                pokeEntity.setPos(guard.getX(), guard.getY(), guard.getZ());
-                pokeEntity.setInvulnerable(false);
-                pokeEntity.setPersistenceRequired();
-                pokeEntity.getTags().add("guard_partner_" + guard.getUUID());
-                
-                injectGuardGoals(pokeEntity, guard);
 
-                level.addFreshEntity(pokeEntity);
-                this.partnerUUID = pokeEntity.getUUID();
-            }
+        Entity newEntity = type.create(level);
+        if (newEntity instanceof PokemonEntity pokeEntity) {
+            pokeEntity.setPokemon(mon);
+            pokeEntity.setPos(guard.getX(), guard.getY(), guard.getZ());
+            pokeEntity.setInvulnerable(false);
+            pokeEntity.setPersistenceRequired();
+            pokeEntity.getTags().add("guard_partner_" + guard.getUUID());
+
+            injectGuardGoals(pokeEntity, guard);
+
+            level.addFreshEntity(pokeEntity);
+            this.partnerUUID = pokeEntity.getUUID();
         }
     }
     
@@ -169,7 +154,7 @@ public class PokemonGuardAI extends AbstractEntityAIGuard<PokemonGuardJob, Pokem
                             15, 0.5D, 0.5D, 0.5D, 0.1D);
                     }
                     
-                    attackDelay = 20; //might be a bit to slow but ill leave for player feedback when the mod goes live
+                    attackDelay = 15; //might be a bit to slow but ill leave for player feedback when the mod goes live
                 }
             }
         });

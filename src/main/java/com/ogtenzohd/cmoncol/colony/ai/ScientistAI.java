@@ -2,7 +2,7 @@ package com.ogtenzohd.cmoncol.colony.ai;
 
 import com.minecolonies.api.entity.citizen.Skill;
 import com.minecolonies.core.entity.ai.workers.AbstractEntityAIBasic;
-import com.minecolonies.api.colony.requestsystem.requestable.Stack;
+import com.ogtenzohd.cmoncol.blocks.custom.sciencelab.ScienceLabBlockEntity;
 import com.ogtenzohd.cmoncol.colony.buildings.ScienceLabBuilding;
 import com.ogtenzohd.cmoncol.colony.job.ScientistJob;
 import com.ogtenzohd.cmoncol.util.ScienceLabLootTable;
@@ -13,16 +13,12 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
-import java.util.Random;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.ArrayList;
-import java.util.List;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import com.ogtenzohd.cmoncol.blocks.custom.sciencelab.ScienceLabBlockEntity;
+
+import java.util.*;
 
 public class ScientistAI extends AbstractEntityAIBasic<ScientistJob, ScienceLabBuilding> {
 
@@ -46,10 +42,9 @@ public class ScientistAI extends AbstractEntityAIBasic<ScientistJob, ScienceLabB
 
     @Override
     public void tick() {
-        if (job.getWorkBuilding() == null || !job.getCitizen().getEntity().isPresent()) return;
-        LivingEntity entity = job.getCitizen().getEntity().get();
-        if (!(entity instanceof Mob mob)) return;
-        
+        if (job.getWorkBuilding() == null || job.getCitizen().getEntity().isEmpty()) return;
+        Mob entity = job.getCitizen().getEntity().get();
+
         if (job.getWorkBuilding() instanceof ScienceLabBuilding labBld) {
             selectedSite = labBld.getCurrentSite();
         }
@@ -58,7 +53,7 @@ public class ScientistAI extends AbstractEntityAIBasic<ScientistJob, ScienceLabB
 
         if (job.getColony().getWorld().getBlockEntity(labPos) instanceof ScienceLabBlockEntity lab) {
             if (!lab.isExpeditionActive() && currentState != State.IDLE && currentState != State.DEPOSIT) {
-                endMission(mob);
+                endMission(entity);
                 currentState = State.DEPOSIT;
                 return;
             }
@@ -72,9 +67,9 @@ public class ScientistAI extends AbstractEntityAIBasic<ScientistJob, ScienceLabB
                         return;
                     }
                 }
-                if (mob.getNavigation().isDone() && rand.nextInt(30) == 0) {
+                if (entity.getNavigation().isDone() && rand.nextInt(30) == 0) {
                     BlockPos p = labPos.offset(rand.nextInt(7) - 3, 0, rand.nextInt(7) - 3);
-                    mob.getNavigation().moveTo(p.getX(), p.getY(), p.getZ(), 0.6);
+                    entity.getNavigation().moveTo(p.getX(), p.getY(), p.getZ(), 0.6);
                 }
                 break;
 
@@ -86,25 +81,25 @@ public class ScientistAI extends AbstractEntityAIBasic<ScientistJob, ScienceLabB
                     if (!hasShovel) checkIfRequestForItemExistOrCreateAsync(new ItemStack(Items.DIAMOND_SHOVEL));
                     if (!hasPickaxe) checkIfRequestForItemExistOrCreateAsync(new ItemStack(Items.DIAMOND_PICKAXE));
                     if (entity.distanceToSqr(labPos.getCenter()) > 9) {
-                        mob.getNavigation().moveTo(labPos.getX(), labPos.getY(), labPos.getZ(), 1.0);
+                        entity.getNavigation().moveTo(labPos.getX(), labPos.getY(), labPos.getZ(), 1.0);
                     }
                     return; 
                 }
 
                 edgeTarget = findEdgeTarget(labPos);
-                mob.getNavigation().moveTo(edgeTarget.getX(), edgeTarget.getY(), edgeTarget.getZ(), 1.0);
+                entity.getNavigation().moveTo(edgeTarget.getX(), edgeTarget.getY(), edgeTarget.getZ(), 1.0);
                 currentState = State.MOVE_TO_EDGE;
                 break;
 
             case MOVE_TO_EDGE:
                 if (edgeTarget != null) {
-                    if (entity.distanceToSqr(edgeTarget.getCenter()) <= 16 || mob.getNavigation().isDone()) {
-                        startMission(mob);
+                    if (entity.distanceToSqr(edgeTarget.getCenter()) <= 16 || entity.getNavigation().isDone()) {
+                        startMission(entity);
                     } else if (entity.tickCount % 40 == 0) {
-                        mob.getNavigation().moveTo(edgeTarget.getX(), edgeTarget.getY(), edgeTarget.getZ(), 1.0);
+                        entity.getNavigation().moveTo(edgeTarget.getX(), edgeTarget.getY(), edgeTarget.getZ(), 1.0);
                     }
                 } else {
-                    startMission(mob);
+                    startMission(entity);
                 }
                 break;
 
@@ -124,13 +119,13 @@ public class ScientistAI extends AbstractEntityAIBasic<ScientistJob, ScienceLabB
                     int triggerTimeForThisRoll = diggingWindowStart - (timePerRoll * currentRollIndex);
                     
                     if (missionTimer == triggerTimeForThisRoll) {
-                        processSingleDig(mob);
+                        processSingleDig();
                         currentRollIndex++;
                     }
                 }
                 if (isAmbushed && missionTimer == (totalMissionTime / 4)) {
-                    mob.hurt(mob.damageSources().mobAttack(null), 6.0f); 
-                    mob.sendSystemMessage(Component.literal("§cScientist was attacked at the dig site!"));
+                    entity.hurt(entity.damageSources().mobAttack(null), 6.0f);
+                    entity.sendSystemMessage(Component.literal("§cScientist was attacked at the dig site!"));
                     writeJournalLine(generateAmbushText());
                     if (!pendingLoot.isEmpty() && rand.nextBoolean()) {
                         ItemStack lost = pendingLoot.remove(rand.nextInt(pendingLoot.size()));
@@ -138,19 +133,19 @@ public class ScientistAI extends AbstractEntityAIBasic<ScientistJob, ScienceLabB
                     }
                 }
                 if (missionTimer <= 0) {
-                    endMission(mob); 
-                    finishMissionOutcome(mob);
-                    mob.getNavigation().moveTo(labPos.getX(), labPos.getY(), labPos.getZ(), 1.0);
+                    endMission(entity);
+                    finishMissionOutcome(entity);
+                    entity.getNavigation().moveTo(labPos.getX(), labPos.getY(), labPos.getZ(), 1.0);
                     currentState = State.RETURN_TO_LAB;
                 }
                 break;
 
             case RETURN_TO_LAB:
-                if (entity.distanceToSqr(labPos.getCenter()) <= 16 || mob.getNavigation().isDone()) {
-                    mob.getNavigation().stop();
+                if (entity.distanceToSqr(labPos.getCenter()) <= 16 || entity.getNavigation().isDone()) {
+                    entity.getNavigation().stop();
                     currentState = State.DEPOSIT;
                 } else if (entity.tickCount % 40 == 0) {
-                    mob.getNavigation().moveTo(labPos.getX(), labPos.getY(), labPos.getZ(), 1.0);
+                    entity.getNavigation().moveTo(labPos.getX(), labPos.getY(), labPos.getZ(), 1.0);
                 }
                 break;
 
@@ -173,9 +168,9 @@ public class ScientistAI extends AbstractEntityAIBasic<ScientistJob, ScienceLabB
         return new BlockPos(center.getX() + dx, y, center.getZ() + dz);
     }
 
-    private int getSkillLevel(Skill skill) {
+    private int getSkillLevel() {
         if (job.getCitizen() == null || job.getCitizen().getCitizenSkillHandler() == null) return 1;
-        return job.getCitizen().getCitizenSkillHandler().getLevel(skill);
+        return job.getCitizen().getCitizenSkillHandler().getLevel(Skill.Intelligence);
     }
 
     private void startMission(Mob mob) {
@@ -198,7 +193,7 @@ public class ScientistAI extends AbstractEntityAIBasic<ScientistJob, ScienceLabB
         currentExpeditionStory = new StringBuilder();
         writeJournalLine(generateDepartureText()); 
         
-        int skill = getSkillLevel(Skill.Intelligence); 
+        int skill = getSkillLevel();
         int safetyDice = 6 + (skill / 7); 
         
         isAmbushed = (rand.nextInt(safetyDice) == 0);
@@ -221,7 +216,7 @@ public class ScientistAI extends AbstractEntityAIBasic<ScientistJob, ScienceLabB
         mob.swing(InteractionHand.MAIN_HAND);
     }
 
-    private void processSingleDig(Mob mob) {
+    private void processSingleDig() {
         ItemStack loot = ScienceLabLootTable.getRandomLoot(selectedSite);
         if (!loot.isEmpty()) {
             pendingLoot.add(loot);
@@ -260,7 +255,7 @@ public class ScientistAI extends AbstractEntityAIBasic<ScientistJob, ScienceLabB
                 summary.append(entry.getValue()).append("x ").append(entry.getKey()).append(", ");
             }
             summary.setLength(summary.length() - 2); 
-            writeJournalLine(summary.toString() + ".");
+            writeJournalLine(summary + ".");
             writeJournalLine("The crown jewel of this trip is definitely the " + rarestItem + ".");
             
         } else {

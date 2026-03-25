@@ -2,7 +2,6 @@ package com.ogtenzohd.cmoncol.colony.buildings;
 
 import com.minecolonies.api.colony.IColony;
 import com.minecolonies.core.colony.buildings.AbstractBuilding;
-import com.ogtenzohd.cmoncol.colony.CmoncolRegistries;
 import net.minecraft.core.BlockPos;
 
 public class PokeCenterBuilding extends AbstractBuilding {

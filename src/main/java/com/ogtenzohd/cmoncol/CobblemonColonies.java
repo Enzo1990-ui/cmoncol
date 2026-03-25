@@ -33,8 +33,6 @@ public class CobblemonColonies {
         CmoncolReg.register(modEventBus);
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::registerEntityAttributes);
-        modEventBus.addListener(this::registerEntityRenderers);
-        modEventBus.addListener(this::onAddLayers);
 
         LOGGER.info("[Cobblemon Colonies] Mod Construction Complete.");
     }
@@ -42,33 +40,6 @@ public class CobblemonColonies {
     private void registerEntityAttributes(EntityAttributeCreationEvent event) {
         event.put(CmoncolReg.GHOST_RECEPTIONIST.get(), com.ogtenzohd.cmoncol.entity.GhostReceptionistEntity.createAttributes().build());
         event.put(CmoncolReg.RANGER_ENTITY.get(), com.ogtenzohd.cmoncol.entity.RangerEntity.createAttributes().build());
-    }
-
-    private void registerEntityRenderers(net.neoforged.neoforge.client.event.EntityRenderersEvent.RegisterRenderers event) {
-        event.registerEntityRenderer(
-                com.ogtenzohd.cmoncol.registration.CmoncolReg.GHOST_RECEPTIONIST.get(),
-                com.ogtenzohd.cmoncol.client.render.InvisibleEntityRenderer::new
-        );
-        event.registerEntityRenderer(
-                com.ogtenzohd.cmoncol.registration.CmoncolReg.RANGER_ENTITY.get(),
-                com.ogtenzohd.cmoncol.client.render.InvisibleEntityRenderer::new
-        );
-    }
-
-    private void onAddLayers(net.neoforged.neoforge.client.event.EntityRenderersEvent.AddLayers event) {
-
-        var defaultRenderer = event.getSkin(net.minecraft.client.resources.PlayerSkin.Model.WIDE);
-        if (defaultRenderer instanceof net.minecraft.client.renderer.entity.player.PlayerRenderer playerRenderer) {
-            playerRenderer.addLayer(new com.ogtenzohd.cmoncol.client.render.VipBadgeLayer(playerRenderer));
-            playerRenderer.addLayer(new com.ogtenzohd.cmoncol.client.render.VipCapeLayer(playerRenderer)); // <--- Added Cape!
-        }
-
-        var slimRenderer = event.getSkin(net.minecraft.client.resources.PlayerSkin.Model.SLIM);
-        if (slimRenderer instanceof net.minecraft.client.renderer.entity.player.PlayerRenderer playerRenderer) {
-            playerRenderer.addLayer(new com.ogtenzohd.cmoncol.client.render.VipBadgeLayer(playerRenderer));
-            playerRenderer.addLayer(new com.ogtenzohd.cmoncol.client.render.VipCapeLayer(playerRenderer)); // <--- Added Cape!
-        }
-
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {

@@ -4,6 +4,7 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
+import org.jetbrains.annotations.NotNull;
 
 public class InvisibleEntityRenderer<T extends Entity> extends EntityRenderer<T> {
 
@@ -12,11 +13,11 @@ public class InvisibleEntityRenderer<T extends Entity> extends EntityRenderer<T>
     }
 
     @Override
-    public ResourceLocation getTextureLocation(T entity) {
+    public @NotNull ResourceLocation getTextureLocation(@NotNull T entity) {
         return ResourceLocation.withDefaultNamespace("textures/entity/player/wide/steve.png");
     }
 
     @Override
-    public void render(T entity, float entityYaw, float partialTicks, com.mojang.blaze3d.vertex.PoseStack poseStack, net.minecraft.client.renderer.MultiBufferSource buffer, int packedLight) {
+    public void render(@NotNull T entity, float entityYaw, float partialTicks, com.mojang.blaze3d.vertex.@NotNull PoseStack poseStack, net.minecraft.client.renderer.@NotNull MultiBufferSource buffer, int packedLight) {
     }
 }

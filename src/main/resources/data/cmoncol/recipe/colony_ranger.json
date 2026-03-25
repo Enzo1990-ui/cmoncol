@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PEP",
+    "BSB",
+    "BBB"
+  ],
+  "key": {
+    "B": { "item": "minecraft:oak_planks" },
+    "P": { "item": "cobblemon:poke_ball" },
+    "S": { "item": "structurize:sceptergold" },
+	"E": { "item": "minecraft:lead"}
+  },
+  "result": {
+    "id": "cmoncol:colony_ranger"
+  }
+}

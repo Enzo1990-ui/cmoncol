@@ -12,6 +12,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Set;
 import java.util.UUID;
 
 public class WonderTradeCentreBlockEntity extends TileEntityColonyBuilding {
@@ -72,58 +73,83 @@ public class WonderTradeCentreBlockEntity extends TileEntityColonyBuilding {
             luckFactor += 0.5;
         }
 
-        double legWeight = CCConfig.INSTANCE.legendaryWeight.get() * luckFactor;
-        double shinyWeight = CCConfig.INSTANCE.shinyWeight.get() * luckFactor;
-        double rareWeight = CCConfig.INSTANCE.rareWeight.get() * luckFactor;
+        boolean strictMatch = CCConfig.INSTANCE.strictRarityMatching.get();
+        int targetTier = 1;
 
-        double totalSpecialWeight = legWeight + shinyWeight + rareWeight;
+        java.util.List<com.cobblemon.mod.common.pokemon.Species> allImplemented = new java.util.ArrayList<>(PokemonSpecies.getImplemented());
+        java.util.List<com.cobblemon.mod.common.pokemon.Species> tier3 = new java.util.ArrayList<>();
+        java.util.List<com.cobblemon.mod.common.pokemon.Species> tier2 = new java.util.ArrayList<>();
+        java.util.List<com.cobblemon.mod.common.pokemon.Species> tier1 = new java.util.ArrayList<>();
 
-        if (totalSpecialWeight > 1.0) {
-            legWeight = legWeight / totalSpecialWeight;
-            shinyWeight = shinyWeight / totalSpecialWeight;
-            rareWeight = rareWeight / totalSpecialWeight;
+        for (com.cobblemon.mod.common.pokemon.Species s : allImplemented) {
+            Set<String> labels = s.getLabels();
+            if (labels.contains("legendary") || labels.contains("mythical")) {
+                tier3.add(s);
+            } else if (labels.contains("ultra_beast") || labels.contains("pseudo_legendary")) {
+                tier2.add(s);
+            } else {
+                tier1.add(s);
+            }
         }
 
-        double roll = this.level.random.nextDouble();
+        if (strictMatch && this.depositedPokemonNBT != null) {
+            try {
+                Pokemon depositedMon = new Pokemon();
+                depositedMon.loadFromNBT(this.level.registryAccess(), this.depositedPokemonNBT);
+                Set<String> depositedLabels = depositedMon.getSpecies().getLabels();
 
-        String speciesName = "random";
-        String extraProperties = "";
-        int minLvl = 5, maxLvl = 25;
-
-        java.util.List<com.cobblemon.mod.common.pokemon.Species> allImplemented =
-                new java.util.ArrayList<>(PokemonSpecies.getImplemented());
-
-        if (roll < legWeight) {
-            java.util.List<com.cobblemon.mod.common.pokemon.Species> legendaries = new java.util.ArrayList<>();
-            for (com.cobblemon.mod.common.pokemon.Species s : allImplemented) {
-                if (s.getLabels().contains("legendary") || s.getLabels().contains("mythical")) {
-                    legendaries.add(s);
+                if (depositedLabels.contains("legendary") || depositedLabels.contains("mythical")) {
+                    targetTier = 3;
+                } else if (depositedLabels.contains("ultra_beast") || depositedLabels.contains("pseudo_legendary")) {
+                    targetTier = 2;
                 }
+
+                double upgradeChance = CCConfig.INSTANCE.tierUpgradeChance.get() * luckFactor;
+                if (targetTier < 3 && this.level.random.nextDouble() < upgradeChance) {
+                    targetTier++;
+                }
+            } catch (Exception e) {
+                com.ogtenzohd.cmoncol.CobblemonColonies.LOGGER.warn("Failed to read deposited Pokemon tier, defaulting to random.");
+                strictMatch = false;
             }
-            if (!legendaries.isEmpty()) {
-                speciesName = legendaries.get(this.level.random.nextInt(legendaries.size())).getName();
+        }
+
+        if (!strictMatch) {
+            double legWeight = CCConfig.INSTANCE.legendaryWeight.get() * luckFactor;
+            double rareWeight = CCConfig.INSTANCE.rareWeight.get() * luckFactor;
+            double totalSpecialWeight = legWeight + rareWeight;
+            if (totalSpecialWeight > 1.0) {
+                legWeight = legWeight / totalSpecialWeight;
+                rareWeight = rareWeight / totalSpecialWeight;
             }
 
+            double tierRoll = this.level.random.nextDouble();
+            if (tierRoll < legWeight) {
+                targetTier = 3;
+            } else if (tierRoll < (legWeight + rareWeight)) {
+                targetTier = 2;
+            }
+        }
+
+        String speciesName = "magikarp";
+        int minLvl = 5, maxLvl = 25;
+        String extraProperties = "";
+
+        if (targetTier == 3 && !tier3.isEmpty()) {
+            speciesName = tier3.get(this.level.random.nextInt(tier3.size())).getName();
             extraProperties = " aspects=colour:yellow";
             minLvl = 70; maxLvl = 100;
-        }
-        else if (roll < (legWeight + shinyWeight)) {
-            extraProperties = " shiny=yes aspects=colour:purple";
-            minLvl = 30; maxLvl = 50;
-        }
-        else if (roll < (legWeight + shinyWeight + rareWeight)) {
-            java.util.List<com.cobblemon.mod.common.pokemon.Species> ultraBeasts = new java.util.ArrayList<>();
-            for (com.cobblemon.mod.common.pokemon.Species s : allImplemented) {
-                if (s.getLabels().contains("ultra_beast")) {
-                    ultraBeasts.add(s);
-                }
-            }
-            if (!ultraBeasts.isEmpty()) {
-                speciesName = ultraBeasts.get(this.level.random.nextInt(ultraBeasts.size())).getName();
-            }
-
+        } else if (targetTier == 2 && !tier2.isEmpty()) {
+            speciesName = tier2.get(this.level.random.nextInt(tier2.size())).getName();
             extraProperties = " aspects=colour:blue";
             minLvl = 40; maxLvl = 60;
+        } else if (!tier1.isEmpty()) {
+            speciesName = tier1.get(this.level.random.nextInt(tier1.size())).getName();
+        }
+
+        double shinyChance = CCConfig.INSTANCE.shinyWeight.get() * luckFactor;
+        if (this.level.random.nextDouble() < shinyChance) {
+            extraProperties += " shiny=yes aspects=colour:purple";
         }
 
         String pokemonSpec = "species=" + speciesName + extraProperties;
@@ -139,7 +165,7 @@ public class WonderTradeCentreBlockEntity extends TileEntityColonyBuilding {
 
         try {
             Pokemon randomMon = PokemonProperties.Companion.parse(pokemonSpec).create();
-            int finalLevel = minLvl + this.level.random.nextInt(maxLvl - minLvl + 1);
+            int finalLevel = minLvl + this.level.random.nextInt(Math.max(1, maxLvl - minLvl + 1));
             randomMon.setLevel(finalLevel);
             this.readyPokemonNBT = randomMon.saveToNBT(this.level.registryAccess(), new CompoundTag());
         } catch (Exception e) {

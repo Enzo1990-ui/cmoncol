@@ -41,7 +41,7 @@
   "com.cmoncol.job.gym": "Gym Leader",
   "com.cmoncol.job.wonder_trader": "Wonder Trader",
   "com.cmoncol.job.pokemerchant": "Poké Mart Cashier",
-  "com.cmoncol.job.rancher": "Pokémon Ranger",
+  "com.cmoncol.job.ranger": "Pokémon Ranger",
 
   "entity.minecolonies.wonder_trader": "Wonder Trader",
   "entity.minecolonies.pokemerchant": "Poké Mart Cashier",
@@ -70,5 +70,5 @@
   "cmoncol:gym.skills.desc": "Benefits from high Knowledge and Mana to strategize and battle effectively.",
   "cmoncol:wonder_trader.skills.desc": "Benefits from high Mana and Knowledge to process Wonder Trades more efficiently.",
   "cmoncol:pokemerchant.skills.desc": "Benefits from high Adaptability and Intelligence to manage shop inventory and customer satisfaction.",
-  "cmoncol:rancher.skills.desc": "Benefits from high Agility and Athletics to navigate around your Colony and avoid dangerous Pokémon."
+  "cmoncol:ranger.skills.desc": "Benefits from high Agility and Athletics to navigate around your Colony and avoid dangerous Pokémon."
 }

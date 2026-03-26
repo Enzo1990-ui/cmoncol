@@ -24,6 +24,11 @@ public class RangerAI extends AbstractEntityAIBasic<RangerJob, WatchTowerBuildin
         super(job);
     }
 
+    @Override
+    public Class<WatchTowerBuilding> getExpectedBuildingClass() {
+        return WatchTowerBuilding.class;
+    }
+
     public void tick() {
         if (job.getWorkBuilding() == null || job.getCitizen().getEntity().isEmpty()) return;
         Mob ranger = job.getCitizen().getEntity().get();
@@ -35,17 +40,26 @@ public class RangerAI extends AbstractEntityAIBasic<RangerJob, WatchTowerBuildin
             BlockPos deskPos = job.getWorkBuilding().getPosition();
 
             if (ranger.distanceToSqr(deskPos.getX(), deskPos.getY(), deskPos.getZ()) > 9) {
+                cleanUpOldGhosts(ranger, serverLevel);
                 ranger.getNavigation().moveTo(deskPos.getX(), deskPos.getY(), deskPos.getZ(), 1.0);
             } else {
                 ranger.getNavigation().stop();
 
-                if (spawnedGhostUUID == null) {
+                if (spawnedGhostUUID == null || serverLevel.getEntity(spawnedGhostUUID) == null) {
+                    cleanUpOldGhosts(ranger, serverLevel);
+
                     RangerEntity ghost = new RangerEntity(CmoncolReg.RANGER_ENTITY.get(), serverLevel);
-                    ghost.setPos(deskPos.getX() + 0.5, deskPos.getY(), deskPos.getZ() + 0.5);
+                    ghost.setPos(ranger.getX(), ranger.getY(), ranger.getZ());
+                    ghost.addTag("ranger_ghost_for_" + ranger.getUUID());
                     ghost.setBuildingLevel(job.getWorkBuilding().getBuildingLevel());
 
                     serverLevel.addFreshEntity(ghost);
                     spawnedGhostUUID = ghost.getUUID();
+                } else {
+                    Entity ghost = serverLevel.getEntity(spawnedGhostUUID);
+                    if (ghost != null) {
+                        ghost.setPos(ranger.getX(), ranger.getY(), ranger.getZ());
+                    }
                 }
             }
         } else {
@@ -99,30 +113,18 @@ public class RangerAI extends AbstractEntityAIBasic<RangerJob, WatchTowerBuildin
         }
     }
 
-    private void cleanUpOldGhosts(Mob ranger, ServerLevel serverLevel) {
+    private void cleanUpOldGhosts(Mob worker, ServerLevel level) {
+        String targetTag = "ranger_ghost_for_" + worker.getUUID();
+        java.util.List<RangerEntity> orphans = level.getEntitiesOfClass(
+                RangerEntity.class,
+                worker.getBoundingBox().inflate(10.0D),
+                e -> e.getTags().contains(targetTag)
+        );
+        for (RangerEntity orphan : orphans) {
+            orphan.discard();
+        }
         if (spawnedGhostUUID != null) {
-            Entity ghost = serverLevel.getEntity(spawnedGhostUUID);
-            if (ghost != null) {
-                ghost.discard();
-            }
             spawnedGhostUUID = null;
         }
-
-        if (job.getWorkBuilding() != null) {
-            BlockPos deskPos = job.getWorkBuilding().getPosition();
-
-            net.minecraft.world.phys.AABB searchArea = new net.minecraft.world.phys.AABB(deskPos).inflate(5);
-
-            java.util.List<RangerEntity> orphanedGhosts = serverLevel.getEntitiesOfClass(RangerEntity.class, searchArea);
-
-            for (RangerEntity orphan : orphanedGhosts) {
-                orphan.discard();
-            }
-        }
-    }
-
-    @Override
-    public Class<WatchTowerBuilding> getExpectedBuildingClass() {
-        return WatchTowerBuilding.class;
     }
 }

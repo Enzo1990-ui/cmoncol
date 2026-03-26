@@ -33,23 +33,24 @@ public class PastureBlockEntity extends TileEntityColonyBuilding {
         public UUID ownerUUID;
         public String ownerName;
         public CompoundTag pokemonNBT;
-        public CompoundTag snapshotNBT; 
+        public CompoundTag snapshotNBT;
         public UUID spawnedEntityUUID = null;
-        public int selectedRecipe = 0; 
-        
+        public int selectedRecipe = 0;
+
         public PastureSlot(UUID ownerUUID, String ownerName, CompoundTag pokemonNBT) {
             this.ownerUUID = ownerUUID;
             this.ownerName = ownerName;
             this.pokemonNBT = pokemonNBT;
-            this.snapshotNBT = pokemonNBT.copy(); 
+            this.snapshotNBT = pokemonNBT.copy();
         }
     }
 
     private final List<PastureSlot> storedPokemon = new ArrayList<>();
-    private int startupDelay = 60; 
+    private int startupDelay = 60;
+    private int clientLevel = 1;
 
     public PastureBlockEntity(BlockPos pos, BlockState state) {
-        super(CmoncolReg.PASTURE_BE.get(), pos, state); 
+        super(CmoncolReg.PASTURE_BE.get(), pos, state);
     }
 
     private String getBuildingTag() {
@@ -63,7 +64,7 @@ public class PastureBlockEntity extends TileEntityColonyBuilding {
             Pokemon p = new Pokemon();
             p.loadFromNBT(level.registryAccess(), slot.pokemonNBT);
             String species = p.getSpecies().getName().toLowerCase();
-            
+
             List<RancherRecipeManager.RancherRecipe> recipes = RancherRecipeManager.getRecipesFor(species);
             if (recipes.size() > 1) {
                 slot.selectedRecipe = (slot.selectedRecipe + 1) % recipes.size();
@@ -77,16 +78,20 @@ public class PastureBlockEntity extends TileEntityColonyBuilding {
     public void tick() {
         super.tick();
         if (this.level instanceof net.minecraft.server.level.ServerLevel serverLevel) {
+            if (serverLevel.getGameTime() % 100 == 0) {
+                serverLevel.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
+            }
+
             if (startupDelay > 0) {
                 startupDelay--;
                 if (startupDelay == 0) {
                     BlockPos center = getGardenCenter();
                     AABB scanArea = new AABB(center).inflate(48);
                     String myTag = getBuildingTag();
-                    
-                    List<PokemonEntity> ghosts = serverLevel.getEntitiesOfClass(PokemonEntity.class, scanArea, 
-                        e -> e.getTags().contains("cmoncol_dummy"));
-                    
+
+                    List<PokemonEntity> ghosts = serverLevel.getEntitiesOfClass(PokemonEntity.class, scanArea,
+                            e -> e.getTags().contains("cmoncol_dummy"));
+
                     for (PokemonEntity ghost : ghosts) {
                         boolean belongsToNeighbor = false;
                         for (String tag : ghost.getTags()) {
@@ -95,7 +100,7 @@ public class PastureBlockEntity extends TileEntityColonyBuilding {
                                 break;
                             }
                         }
-                        
+
                         if (!belongsToNeighbor) {
                             ghost.discard();
                         }
@@ -105,7 +110,7 @@ public class PastureBlockEntity extends TileEntityColonyBuilding {
                         spawnPokemonEntity(pastureSlot);
                     }
                 }
-                return; 
+                return;
             }
 
             if (serverLevel.getGameTime() % 20 == 0) {
@@ -133,22 +138,26 @@ public class PastureBlockEntity extends TileEntityColonyBuilding {
                         slot.snapshotNBT = slot.pokemonNBT.copy();
                         pokeEntity.discard();
                     }
-                    slot.spawnedEntityUUID = null; 
+                    slot.spawnedEntityUUID = null;
                 }
             }
         }
         super.setRemoved();
     }
 
-    public int getMaxSlots() { 
-        int level = 1;
-        IBuilding building = getBuilding();
-        if (building instanceof AbstractBuilding abstractBuilding) {
-            level = abstractBuilding.getBuildingLevel();
+    public int getMaxSlots() {
+        int bLevel = 1;
+        if (this.level != null && this.level.isClientSide) {
+            bLevel = this.clientLevel;
+        } else {
+            IBuilding building = getBuilding();
+            if (building instanceof AbstractBuilding abstractBuilding) {
+                bLevel = abstractBuilding.getBuildingLevel();
+            }
         }
-        return Math.max(1, level * 2); 
+        return Math.max(1, bLevel * 2);
     }
-    
+
     public List<PastureSlot> getStoredPokemon() { return storedPokemon; }
 
     private void checkBounds(Entity entity, BlockPos center, Map<String, Set<BlockPos>> tagMap) {
@@ -160,7 +169,7 @@ public class PastureBlockEntity extends TileEntityColonyBuilding {
                 BlockPos a = tagMap.get("pasture_point_a").iterator().next();
                 BlockPos b = tagMap.get("pasture_point_b").iterator().next();
                 if (entPos.getX() < Math.min(a.getX(), b.getX()) || entPos.getX() > Math.max(a.getX(), b.getX()) ||
-                    entPos.getZ() < Math.min(a.getZ(), b.getZ()) || entPos.getZ() > Math.max(a.getZ(), b.getZ())) outOfBounds = true;
+                        entPos.getZ() < Math.min(a.getZ(), b.getZ()) || entPos.getZ() > Math.max(a.getZ(), b.getZ())) outOfBounds = true;
             }
         } else if (entity.distanceToSqr(center.getX(), center.getY(), center.getZ()) > 200) outOfBounds = true;
 
@@ -177,7 +186,7 @@ public class PastureBlockEntity extends TileEntityColonyBuilding {
             BlockPos b = tagMap.get("pasture_point_b").iterator().next();
             return new BlockPos((a.getX() + b.getX()) / 2, Math.min(a.getY(), b.getY()), (a.getZ() + b.getZ()) / 2);
         }
-        return this.getBlockPos(); 
+        return this.getBlockPos();
     }
 
     private void spawnPokemonEntity(PastureSlot slot) {
@@ -243,7 +252,7 @@ public class PastureBlockEntity extends TileEntityColonyBuilding {
                 if (sPlayer != null) {
                     Pokemon mon = new Pokemon();
                     mon.loadFromNBT(serverLevel.registryAccess(), slot.snapshotNBT);
-                    mon.setUuid(UUID.randomUUID()); 
+                    mon.setUuid(UUID.randomUUID());
                     com.cobblemon.mod.common.api.storage.party.PlayerPartyStore party = com.cobblemon.mod.common.Cobblemon.INSTANCE.getStorage().getParty(sPlayer);
                     com.cobblemon.mod.common.api.storage.pc.PCStore pc = com.cobblemon.mod.common.Cobblemon.INSTANCE.getStorage().getPC(sPlayer);
                     if (!party.add(mon)) {
@@ -290,11 +299,20 @@ public class PastureBlockEntity extends TileEntityColonyBuilding {
             slotData.putUUID("Owner", slot.ownerUUID);
             slotData.putString("OwnerName", slot.ownerName);
             slotData.put("PokemonNBT", slot.pokemonNBT);
-            slotData.put("SnapshotNBT", slot.snapshotNBT); 
+            slotData.put("SnapshotNBT", slot.snapshotNBT);
             slotData.putInt("Recipe", slot.selectedRecipe);
             slotsTag.add(slotData);
         }
         tag.put("PastureSlots", slotsTag);
+
+        if (this.level != null && !this.level.isClientSide) {
+            IBuilding building = getBuilding();
+            if (building instanceof AbstractBuilding abstractBuilding) {
+                tag.putInt("ClientLevel", abstractBuilding.getBuildingLevel());
+            }
+        } else {
+            tag.putInt("ClientLevel", this.clientLevel);
+        }
     }
 
     @Override
@@ -311,6 +329,10 @@ public class PastureBlockEntity extends TileEntityColonyBuilding {
                 if (slotData.contains("Recipe")) slot.selectedRecipe = slotData.getInt("Recipe");
                 storedPokemon.add(slot);
             }
+        }
+
+        if (tag.contains("ClientLevel")) {
+            this.clientLevel = tag.getInt("ClientLevel");
         }
     }
 }

@@ -36,17 +36,23 @@ public class DaycareProxyWindow extends AbstractModuleWindow<DaycareProxyModuleV
 
         registerButton("depositBtn", btn -> {
             BlockPos pos = moduleView.getTargetPos();
-            if (pos != null) { CmoncolPackets.sendToServer(new ProxyActionPacket(pos, 2, selectedPartySlot)); }
+            if (pos != null) {
+                CmoncolPackets.sendToServer(new ProxyActionPacket(pos, 2, selectedPartySlot));
+            }
         });
 
         registerButton("withdraw1Btn", btn -> {
             BlockPos pos = moduleView.getTargetPos();
-            if (pos != null) { CmoncolPackets.sendToServer(new ProxyActionPacket(pos, 3, 0)); }
+            if (pos != null) {
+                CmoncolPackets.sendToServer(new ProxyActionPacket(pos, 3, 0));
+            }
         });
 
         registerButton("withdraw2Btn", btn -> {
             BlockPos pos = moduleView.getTargetPos();
-            if (pos != null) { CmoncolPackets.sendToServer(new ProxyActionPacket(pos, 6, 0)); }
+            if (pos != null) {
+                CmoncolPackets.sendToServer(new ProxyActionPacket(pos, 6, 0));
+            }
         });
     }
 
@@ -89,14 +95,14 @@ public class DaycareProxyWindow extends AbstractModuleWindow<DaycareProxyModuleV
             net.minecraft.world.entity.player.Player player = Minecraft.getInstance().player;
             net.minecraft.client.multiplayer.ClientLevel level = Minecraft.getInstance().level;
             if (player != null && level != null) {
-                com.cobblemon.mod.common.api.storage.party.PlayerPartyStore party = com.cobblemon.mod.common.Cobblemon.INSTANCE.getStorage().getParty(player.getUUID(), level.registryAccess());
+                com.cobblemon.mod.common.api.storage.party.PlayerPartyStore party =
+                        com.cobblemon.mod.common.Cobblemon.INSTANCE.getStorage().getParty(player.getUUID(), level.registryAccess());
                 com.cobblemon.mod.common.pokemon.Pokemon p = party.get(index);
                 if (p != null) {
                     return p.getDisplayName(true).getString();
                 }
             }
         } catch(Exception e) {
-            throw new RuntimeException(e);
         }
         return "Empty";
     }

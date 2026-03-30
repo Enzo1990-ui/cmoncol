@@ -94,15 +94,17 @@ public class PastureProxyWindow extends AbstractModuleWindow<PastureProxyModuleV
 
     private String getPartyPokemonName(int index) {
         try {
-            var player = Minecraft.getInstance().player;
-            var level = Minecraft.getInstance().level;
+            net.minecraft.world.entity.player.Player player = Minecraft.getInstance().player;
+            net.minecraft.client.multiplayer.ClientLevel level = Minecraft.getInstance().level;
             if (player != null && level != null) {
-                var party = com.cobblemon.mod.common.Cobblemon.INSTANCE.getStorage().getParty(player.getUUID(), level.registryAccess());
-                var p = party.get(index);
-                if (p != null) return p.getDisplayName(true).getString();
+                com.cobblemon.mod.common.api.storage.party.PlayerPartyStore party =
+                        com.cobblemon.mod.common.Cobblemon.INSTANCE.getStorage().getParty(player.getUUID(), level.registryAccess());
+                com.cobblemon.mod.common.pokemon.Pokemon p = party.get(index);
+                if (p != null) {
+                    return p.getDisplayName(true).getString();
+                }
             }
         } catch(Exception e) {
-            throw new RuntimeException(e);
         }
         return "Empty";
     }

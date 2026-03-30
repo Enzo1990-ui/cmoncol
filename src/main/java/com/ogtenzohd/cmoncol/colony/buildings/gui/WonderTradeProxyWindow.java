@@ -110,7 +110,6 @@ public class WonderTradeProxyWindow extends AbstractModuleWindow<WonderTradeProx
                 }
             }
         } catch(Exception e) {
-            throw new RuntimeException(e);
         }
         return "Empty";
     }

@@ -32,7 +32,11 @@ public class UpdateDigSitePacket implements CustomPacketPayload {
         context.enqueueWork(() -> {
             if (context.player() instanceof ServerPlayer player) {
                 BlockEntity be = player.level().getBlockEntity(payload.pos);
-                ScienceLabBlockEntity lab = (ScienceLabBlockEntity) be;
+                if (be instanceof ScienceLabBlockEntity lab) {
+                    lab.cycleDigSite();
+                    lab.setChanged();
+                    player.level().sendBlockUpdated(payload.pos, lab.getBlockState(), lab.getBlockState(), 3);
+                }
             }
         });
     }

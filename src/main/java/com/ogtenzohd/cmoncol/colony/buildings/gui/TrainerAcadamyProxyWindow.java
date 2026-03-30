@@ -100,7 +100,7 @@ public class TrainerAcadamyProxyWindow extends AbstractModuleWindow<TrainerAcada
             net.minecraft.world.entity.player.Player player = Minecraft.getInstance().player;
             net.minecraft.client.multiplayer.ClientLevel level = Minecraft.getInstance().level;
             if (player != null && level != null) {
-                com.cobblemon.mod.common.api.storage.party.PlayerPartyStore party = 
+                com.cobblemon.mod.common.api.storage.party.PlayerPartyStore party =
                     com.cobblemon.mod.common.Cobblemon.INSTANCE.getStorage().getParty(player.getUUID(), level.registryAccess());
                 com.cobblemon.mod.common.pokemon.Pokemon p = party.get(index);
                 if (p != null) {
@@ -108,7 +108,6 @@ public class TrainerAcadamyProxyWindow extends AbstractModuleWindow<TrainerAcada
                 }
             }
         } catch(Exception e) {
-            throw new RuntimeException(e);
         }
         return "Empty";
     }

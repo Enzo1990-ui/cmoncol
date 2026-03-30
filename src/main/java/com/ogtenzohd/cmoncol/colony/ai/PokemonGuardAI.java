@@ -72,6 +72,7 @@ public class PokemonGuardAI extends AbstractEntityAIGuard<PokemonGuardJob, Pokem
             pokeEntity.setInvulnerable(false);
             pokeEntity.setPersistenceRequired();
             pokeEntity.getTags().add("guard_partner_" + guard.getUUID());
+            pokeEntity.getPersistentData().putBoolean("cmoncol:is_guard", true);
 
             injectGuardGoals(pokeEntity, guard);
 

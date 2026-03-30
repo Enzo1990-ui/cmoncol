@@ -3,6 +3,7 @@ package com.ogtenzohd.cmoncol.events;
 import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.api.storage.party.PlayerPartyStore;
 import com.cobblemon.mod.common.block.entity.HealingMachineBlockEntity;
+import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.minecolonies.api.colony.ICitizenData;
 import com.minecolonies.api.colony.jobs.IJob;
 import com.minecolonies.api.entity.citizen.AbstractEntityCitizen;
@@ -17,6 +18,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -26,6 +29,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
 import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import org.jetbrains.annotations.NotNull;
 
 @EventBusSubscriber(modid = CobblemonColonies.MODID)
@@ -191,6 +195,26 @@ public class CmoncolEvents {
 
                 event.setCanceled(true);
                 event.setCancellationResult(net.minecraft.world.InteractionResult.SUCCESS);
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPokemonTickInterceptor(EntityTickEvent.Pre event) {
+        if (!event.getEntity().level().isClientSide() && event.getEntity() instanceof PokemonEntity pokemon) {
+
+            boolean isGuard = pokemon.getPersistentData().getBoolean("cmoncol:is_guard");
+            boolean isDummy = pokemon.getTags().contains("cmoncol_dummy");
+
+            if (isGuard || isDummy) {
+                if (pokemon.getBrain().hasMemoryValue(MemoryModuleType.ATTACK_TARGET)) {
+                    LivingEntity target = pokemon.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).get();
+
+                    if (isDummy || target instanceof Player) {
+                        pokemon.getBrain().eraseMemory(MemoryModuleType.ATTACK_TARGET);
+                        pokemon.setTarget(null);
+                    }
+                }
             }
         }
     }

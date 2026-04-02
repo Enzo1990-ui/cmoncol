@@ -94,6 +94,23 @@ public class PokemonGuardAI extends AbstractEntityAIGuard<PokemonGuardJob, Pokem
     }
 
     private void injectGuardGoals(PokemonEntity pokemon, LivingEntity guard) {
+        pokemon.goalSelector.addGoal(0, new Goal() {
+            @Override
+            public boolean canUse() {
+                if (!guard.isAlive()) return true;
+                if (guard instanceof EntityCitizen citizen) {
+                    if (citizen.getCitizenData() == null || !(citizen.getCitizenData().getJob() instanceof PokemonGuardJob)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            @Override
+            public void start() {
+                pokemon.discard();
+            }
+        });
         pokemon.goalSelector.addGoal(2, new Goal() {
             { this.setFlags(EnumSet.of(Goal.Flag.MOVE)); }
             @Override public boolean canUse() { return guard.isAlive() && pokemon.distanceToSqr(guard) > 25; }
@@ -134,6 +151,8 @@ public class PokemonGuardAI extends AbstractEntityAIGuard<PokemonGuardJob, Pokem
                 return pokemon.getTarget() != null && pokemon.getTarget().isAlive() && pokemon.distanceToSqr(pokemon.getTarget()) < 64.0D; 
             }
 
+
+
             @Override
             public void tick() {
                 LivingEntity target = pokemon.getTarget();
@@ -160,4 +179,5 @@ public class PokemonGuardAI extends AbstractEntityAIGuard<PokemonGuardJob, Pokem
             }
         });
     }
+
 }

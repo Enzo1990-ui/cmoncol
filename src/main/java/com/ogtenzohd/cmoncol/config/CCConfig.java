@@ -48,7 +48,7 @@ public class CCConfig {
         breedingMode = builder.comment("Breeding Difficulty.").defineEnum("breedingMode", BreedingMode.MODERN);
         enableDaycareCost = builder.comment("Whether withdrawing Pokemon from the Daycare costs currency/items.").define("enableDaycareCost", true);
         daycareCurrencyItem = builder.define("daycareCurrencyItem", "minecraft:emerald");
-        eggCycleThreshold = builder.defineInRange("eggCycleThreshold", 6000, 100, 72000);
+        eggCycleThreshold = builder.defineInRange("eggCycleThreshold", 100, 50, 3000);
         eggGenerationChance = builder.defineInRange("eggGenerationChance", 0.5, 0.0, 1.0);
         xpPerTick = builder.defineInRange("xpPerTick", 10, 0, 1000);
         evsPerCycle = builder.defineInRange("evsPerCycle", 4, 1, 252);

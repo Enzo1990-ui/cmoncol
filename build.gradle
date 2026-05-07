@@ -22,9 +22,9 @@ repositories {
 
     // If you have mod jar dependencies in ./libs, you can declare them as a repository like so.
     // See https://docs.gradle.org/current/userguide/declaring_repositories.html#sub:flat_dir_resolver
-    // flatDir {
-    //      dir 'libs'
-    // }
+    flatDir {
+        dir 'libs'
+    }
 
     // Create mavens
     maven { url = "https://maven.createmod.net" } // Create, Ponder, Flywheel
@@ -134,13 +134,14 @@ configurations {
 
 dependencies {    
     // Local JAR dependencies (Make sure these are inside your /libs/ folder!)
-	
-    implementation files("libs/minecolonies-1.1.1273-1.21.1-snapshot.jar")
-    implementation files("libs/Cobblemon-neoforge-${cobblemon_version}.jar")
 
-    implementation ("com.ldtteam:structurize:${structurize_version}")
-    implementation ("com.ldtteam:blockui:${blockui_version}")
-    implementation ("com.ldtteam:domum-ornamentum:${domum_ornamentum_version}")
+    implementation files("libs/Cobblemon-neoforge-${cobblemon_version}.jar")
+    implementation ("minecolonies:${minecolonies_version}")
+    implementation ("structurize:${structurize_version}") {
+        transitive = false
+    }
+    implementation ("blockui:${blockui_version}")
+    implementation ("domum-ornamentum:${domum_ornamentum_version}")
     implementation ("com.ldtteam:datagenerators:1.20.4-0.1.57-ALPHA:universal")
 
 	compileOnly("org.jetbrains.kotlin:kotlin-stdlib:1.9.22")

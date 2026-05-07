@@ -18,6 +18,7 @@ import net.minecraft.world.level.block.state.properties.Property;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,21 +27,21 @@ public class HarvesterAI extends AbstractEntityAIBasic<HarvesterJob, HarvesterBu
     private enum State { SEARCH, MOVE_TO, HARVEST, DEPOSIT, COOLDOWN }
     private State currentState = State.SEARCH;
 
-    private BlockPos targetApricorn = null; 
+    private BlockPos targetApricorn = null;
     private int workTimer = 0;
-    
+    private int pathingTimer = 0;
+
     private static final String[] COLORS = {"red", "pink", "yellow", "blue", "green", "white", "black"};
     private int colorIndex = 0;
     private int cooldownTimer = 0;
 
     private final List<BlockPos> apricornCache = new ArrayList<>();
     private long lastCacheUpdate = 0;
-	private record HarvestTask(BlockPos fruitPos, BlockPos standPos) {}
-    private final List<HarvestTask> shoppingList = new ArrayList<>();
+    private final List<BlockPos> shoppingList = new ArrayList<>();
 
     public HarvesterAI(HarvesterJob job) { super(job); }
 
-    @Override 
+    @Override
     public Class<HarvesterBuilding> getExpectedBuildingClass() { return HarvesterBuilding.class; }
 
     @SuppressWarnings("ConstantValue")
@@ -57,19 +58,18 @@ public class HarvesterAI extends AbstractEntityAIBasic<HarvesterJob, HarvesterBu
                 if (entity.level().getGameTime() - lastCacheUpdate > 100 || apricornCache.isEmpty()) {
                     scanForCurrentColor(entity, buildingPos);
                 }
-                
+
                 shoppingList.clear();
                 for (BlockPos fruitPos : apricornCache) {
                     if (isApricornMature(entity.level(), fruitPos)) {
-                        BlockPos groundPos = findGroundBelow(entity.level(), fruitPos);
-                        shoppingList.add(new HarvestTask(fruitPos, groundPos));
-                        
-                        if (shoppingList.size() >= 12) break;
+                        shoppingList.add(fruitPos);
+                        if (shoppingList.size() >= 64) break;
                     }
                 }
 
                 if (!shoppingList.isEmpty()) {
                     currentState = State.MOVE_TO;
+                    pathingTimer = 0;
                 } else if (hasItemsToDeposit(entity)) {
                     currentState = State.DEPOSIT;
                 } else {
@@ -83,40 +83,46 @@ public class HarvesterAI extends AbstractEntityAIBasic<HarvesterJob, HarvesterBu
                     return;
                 }
 
-                HarvestTask currentTask = shoppingList.getFirst();
-                targetApricorn = currentTask.fruitPos();
-                BlockPos standAt = currentTask.standPos();
-                
+                targetApricorn = shoppingList.getFirst();
+
                 if (!isValidApricorn(entity.level().getBlockState(targetApricorn)) || !isApricornMature(entity.level(), targetApricorn)) {
                     shoppingList.removeFirst();
-                    return; 
+                    return;
                 }
 
-                double distSq = entity.distanceToSqr(standAt.getCenter());
-                
-                if (distSq > 1.5) {
-                    mob.getNavigation().moveTo(standAt.getX(), standAt.getY(), standAt.getZ(), 1.0);
-                } else {
+                double distSq = entity.distanceToSqr(targetApricorn.getCenter());
+                if (distSq <= 64.0) {
                     mob.getNavigation().stop();
                     currentState = State.HARVEST;
-                    workTimer = 20; 
+                    workTimer = 15;
+                    pathingTimer = 0;
+                } else {
+                    mob.getNavigation().moveTo(targetApricorn.getX(), targetApricorn.getY(), targetApricorn.getZ(), 1.0);
+                    pathingTimer++;
+                    if (pathingTimer > 80 || (mob.getNavigation().isDone() && pathingTimer > 20)) {
+                        shoppingList.removeFirst();
+                        pathingTimer = 0;
+                    }
                 }
                 break;
 
             case HARVEST:
                 if (targetApricorn == null) { currentState = State.SEARCH; return; }
-                
                 mob.getLookControl().setLookAt(targetApricorn.getX(), targetApricorn.getY(), targetApricorn.getZ());
                 workTimer--;
-                
+
                 if (workTimer <= 0) {
                     entity.swing(InteractionHand.MAIN_HAND);
                     harvestApricorn(entity, targetApricorn);
-                    
-                    shoppingList.removeFirst();
+                    shoppingList.remove(targetApricorn);
                     targetApricorn = null;
-                    
-                    currentState = shoppingList.isEmpty() ? State.DEPOSIT : State.MOVE_TO;
+
+                    if (isInventoryFull(entity)) {
+                        currentState = State.DEPOSIT;
+                    } else {
+                        currentState = shoppingList.isEmpty() ? State.SEARCH : State.MOVE_TO;
+                    }
+                    pathingTimer = 0;
                 }
                 break;
 
@@ -126,9 +132,7 @@ public class HarvesterAI extends AbstractEntityAIBasic<HarvesterJob, HarvesterBu
                 } else {
                     mob.getNavigation().stop();
                     depositItems(entity);
-                    
-                    // Tea break!
-                    cooldownTimer = 1200; 
+                    cooldownTimer = 600;
                     currentState = State.COOLDOWN;
                 }
                 break;
@@ -143,47 +147,35 @@ public class HarvesterAI extends AbstractEntityAIBasic<HarvesterJob, HarvesterBu
                 }
                 break;
         }
-	}
-
-    @SuppressWarnings("deprecation")
-    private BlockPos findGroundBelow(net.minecraft.world.level.Level level, BlockPos target) {
-        BlockPos.MutableBlockPos pos = target.mutable().move(0, -1, 0);
-        for (int i = 0; i < 5; i++) {
-            if (!level.getBlockState(pos).isAir() && level.getBlockState(pos).isSolid()) {
-                return pos.above().immutable(); 
-            }
-            pos.move(0, -1, 0);
-        }
-        return target.below(); 
     }
 
     private void switchColor() {
         colorIndex = (colorIndex + 1) % COLORS.length;
         apricornCache.clear();
-        lastCacheUpdate = 0; 
+        lastCacheUpdate = 0;
     }
 
     private void scanForCurrentColor(LivingEntity entity, BlockPos center) {
         apricornCache.clear();
-        
+
         int minX, maxX, minY, maxY, minZ, maxZ;
         Tuple<BlockPos, BlockPos> corners = job.getWorkBuilding() != null ? job.getWorkBuilding().getCorners() : null;
 
         if (corners != null) {
-             BlockPos a = corners.getA();
-             BlockPos b = corners.getB();
-             minX = Math.min(a.getX(), b.getX());
-             maxX = Math.max(a.getX(), b.getX());
-             minY = Math.min(a.getY(), b.getY());
-             maxY = Math.max(a.getY(), b.getY());
-             minZ = Math.min(a.getZ(), b.getZ());
-             maxZ = Math.max(a.getZ(), b.getZ());
-             maxY += 5; 
+            BlockPos a = corners.getA();
+            BlockPos b = corners.getB();
+            minX = Math.min(a.getX(), b.getX());
+            maxX = Math.max(a.getX(), b.getX());
+            minY = Math.min(a.getY(), b.getY());
+            maxY = Math.max(a.getY(), b.getY());
+            minZ = Math.min(a.getZ(), b.getZ());
+            maxZ = Math.max(a.getZ(), b.getZ());
+            maxY += 5;
         } else {
-             int r = 15;
-             minX = center.getX() - r; maxX = center.getX() + r;
-             minY = center.getY(); maxY = center.getY() + 10;
-             minZ = center.getZ() - r; maxZ = center.getZ() + r;
+            int r = 15;
+            minX = center.getX() - r; maxX = center.getX() + r;
+            minY = center.getY(); maxY = center.getY() + 10;
+            minZ = center.getZ() - r; maxZ = center.getZ() + r;
         }
 
         String targetColor = COLORS[colorIndex];
@@ -204,11 +196,11 @@ public class HarvesterAI extends AbstractEntityAIBasic<HarvesterJob, HarvesterBu
 
     private boolean isColorApricorn(BlockState state, String color) {
         ResourceLocation id = BuiltInRegistries.BLOCK.getKey(state.getBlock());
-        return id.getNamespace().equals("cobblemon") 
-            && id.getPath().contains(color)
-            && id.getPath().contains("apricorn") 
-            && !id.getPath().contains("leaves") 
-            && !id.getPath().contains("sapling");
+        return id.getNamespace().equals("cobblemon")
+                && id.getPath().contains(color)
+                && id.getPath().contains("apricorn")
+                && !id.getPath().contains("leaves")
+                && !id.getPath().contains("sapling");
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
@@ -219,7 +211,7 @@ public class HarvesterAI extends AbstractEntityAIBasic<HarvesterJob, HarvesterBu
     private boolean isApricornMature(net.minecraft.world.level.Level level, BlockPos pos) {
         BlockState state = level.getBlockState(pos);
         if (!isValidApricorn(state)) return false;
-        
+
         for (Property<?> prop : state.getProperties()) {
             if (prop.getName().equals("age") && prop instanceof IntegerProperty intProp) {
                 int currentAge = state.getValue(intProp);
@@ -245,33 +237,43 @@ public class HarvesterAI extends AbstractEntityAIBasic<HarvesterJob, HarvesterBu
             }
         }
     }
-	
-	private boolean hasItemsToDeposit(LivingEntity entity) {
-    IItemHandler citizenInv = entity.getCapability(Capabilities.ItemHandler.ENTITY, null);
-    if (citizenInv != null) {
-        for (int i = 0; i < citizenInv.getSlots(); i++) {
-            if (!citizenInv.getStackInSlot(i).isEmpty()) return true;
+
+    private boolean isInventoryFull(LivingEntity entity) {
+        IItemHandler citizenInv = entity.getCapability(Capabilities.ItemHandler.ENTITY, null);
+        if (citizenInv != null) {
+            for (int i = 0; i < citizenInv.getSlots(); i++) {
+                if (citizenInv.getStackInSlot(i).isEmpty()) return false;
+            }
         }
+        return true;
     }
-    return false;
-	}
+
+    private boolean hasItemsToDeposit(LivingEntity entity) {
+        IItemHandler citizenInv = entity.getCapability(Capabilities.ItemHandler.ENTITY, null);
+        if (citizenInv != null) {
+            for (int i = 0; i < citizenInv.getSlots(); i++) {
+                if (!citizenInv.getStackInSlot(i).isEmpty()) return true;
+            }
+        }
+        return false;
+    }
 
     private void depositItems(LivingEntity entity) {
-    IItemHandler citizenInv = entity.getCapability(Capabilities.ItemHandler.ENTITY, null);
-    IItemHandler buildingInv = job.getWorkBuilding().getItemHandlerCap();
-    
-    if (citizenInv != null && buildingInv != null) {
-        for (int i = 0; i < citizenInv.getSlots(); i++) {
-            ItemStack stack = citizenInv.getStackInSlot(i);
-            if (!stack.isEmpty()) {
-                ItemStack remaining = ItemHandlerHelper.insertItemStacked(buildingInv, stack, false);
-                if (remaining.getCount() < stack.getCount()) {
-                    citizenInv.extractItem(i, stack.getCount() - remaining.getCount(), false);
+        IItemHandler citizenInv = entity.getCapability(Capabilities.ItemHandler.ENTITY, null);
+        IItemHandler buildingInv = job.getWorkBuilding().getItemHandlerCap();
+
+        if (citizenInv != null && buildingInv != null) {
+            for (int i = 0; i < citizenInv.getSlots(); i++) {
+                ItemStack stack = citizenInv.getStackInSlot(i);
+                if (!stack.isEmpty()) {
+                    ItemStack remaining = ItemHandlerHelper.insertItemStacked(buildingInv, stack, false);
+                    if (remaining.getCount() < stack.getCount()) {
+                        citizenInv.extractItem(i, stack.getCount() - remaining.getCount(), false);
+                    }
                 }
             }
         }
     }
-	}
 
     private void insertItemIntoPockets(LivingEntity entity, ItemStack stack) {
         IItemHandler citizenInv = entity.getCapability(Capabilities.ItemHandler.ENTITY, null);

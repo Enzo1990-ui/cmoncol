@@ -21,13 +21,18 @@ public class PokemonGuardBuilding extends AbstractBuildingGuards {
     }
 
     @Override
-    public int getClaimRadius(final int newLevel) {
+    public int getMaxBuildingLevel() {
         return 5;
     }
-	
-	@Override
-    public void onUpgradeComplete(final int newLevel) {
-        super.onUpgradeComplete(newLevel);
+
+    @Override
+    public int getClaimRadius(final int newLevel) {
+        return newLevel;
+    }
+
+    @Override
+    public void onUpgradeComplete(@org.jetbrains.annotations.Nullable final com.ldtteam.structurize.blueprints.v1.Blueprint blueprint, final int newLevel) {
+        super.onUpgradeComplete(blueprint, newLevel);
         colony.getServerBuildingManager().guardBuildingChangedAt(this, newLevel);
     }
 

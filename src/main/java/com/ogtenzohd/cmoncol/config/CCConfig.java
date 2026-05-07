@@ -25,11 +25,13 @@ public class CCConfig {
     public final ModConfigSpec.ConfigValue<Integer> evsPerCycle;
     public final ModConfigSpec.EnumValue<BreedingMode> breedingMode;
 
-    public final ModConfigSpec.BooleanValue strictRarityMatching; // NEW
+    public final ModConfigSpec.BooleanValue strictRarityMatching;
     public final ModConfigSpec.DoubleValue tierUpgradeChance;
     public final ModConfigSpec.DoubleValue legendaryWeight;
     public final ModConfigSpec.DoubleValue shinyWeight;
     public final ModConfigSpec.DoubleValue rareWeight;
+
+    public final ModConfigSpec.ConfigValue<String> bottleCapItem;
 
     public final ModConfigSpec.ConfigValue<List<? extends String>> gymVictoryCommands;
     public final ModConfigSpec.ConfigValue<List<? extends String>> pokemartTrades;
@@ -44,6 +46,7 @@ public class CCConfig {
         builder.comment("Debug mode: ");
         debug = builder.define("debug", false);
         builder.pop();
+
         builder.push("Daycare Settings");
         breedingMode = builder.comment("Breeding Difficulty.").defineEnum("breedingMode", BreedingMode.MODERN);
         enableDaycareCost = builder.comment("Whether withdrawing Pokemon from the Daycare costs currency/items.").define("enableDaycareCost", true);
@@ -53,7 +56,13 @@ public class CCConfig {
         xpPerTick = builder.defineInRange("xpPerTick", 10, 0, 1000);
         evsPerCycle = builder.defineInRange("evsPerCycle", 4, 1, 252);
         builder.pop();
-        
+
+        builder.push("Trainer Academy Settings");
+        bottleCapItem = builder.comment(
+                "The item registry name that must be used as a Bottle Cap for Hyper Training."
+        ).define("bottleCapItem", "cobblemon_utility:atksilvercap");
+        builder.pop();
+
         builder.push("Wonder Trade Settings");
         strictRarityMatching = builder.comment("If true, Wonder Trades will return a Pokemon of the same rarity tier as the one deposited.").define("strictRarityMatching", true);
         tierUpgradeChance = builder.comment("If strict rarity is true, this is the chance (0.0 to 1.0) that the trade will 'upgrade' to the next rarity tier.").defineInRange("tierUpgradeChance", 0.05, 0.0, 1.0);
@@ -79,6 +88,7 @@ public class CCConfig {
                 obj -> obj instanceof String
         );
         builder.pop();
+
         builder.push("Pokemart Settings");
         pokemartTrades = builder.comment(
                 "List of all trades available at the PokeMart.",

@@ -115,4 +115,11 @@ public class ScienceLabBlockEntity extends TileEntityColonyBuilding {
             }
         }
     }
+
+    @Override
+    public net.minecraft.nbt.CompoundTag getUpdateTag(net.minecraft.core.HolderLookup.Provider provider) {
+        net.minecraft.nbt.CompoundTag tag = super.getUpdateTag(provider);
+        saveAdditional(tag, provider);
+        return tag;
+    }
 }

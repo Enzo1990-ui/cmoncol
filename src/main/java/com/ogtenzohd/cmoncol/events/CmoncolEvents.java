@@ -1,15 +1,18 @@
 package com.ogtenzohd.cmoncol.events;
 
 import com.cobblemon.mod.common.Cobblemon;
+import com.cobblemon.mod.common.api.events.CobblemonEvents; // NEW IMPORT
 import com.cobblemon.mod.common.api.storage.party.PlayerPartyStore;
 import com.cobblemon.mod.common.block.entity.HealingMachineBlockEntity;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
+import com.cobblemon.mod.common.pokemon.Pokemon; // NEW IMPORT
 import com.minecolonies.api.colony.ICitizenData;
 import com.minecolonies.api.colony.jobs.IJob;
 import com.minecolonies.api.entity.citizen.AbstractEntityCitizen;
 import com.ogtenzohd.cmoncol.CobblemonColonies;
 import com.ogtenzohd.cmoncol.colony.buildings.PokemartTradingUtils;
 import com.ogtenzohd.cmoncol.colony.job.NurseJob;
+import kotlin.Unit; // NEW IMPORT
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -18,6 +21,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.player.Player;
@@ -34,29 +38,29 @@ import org.jetbrains.annotations.NotNull;
 
 @EventBusSubscriber(modid = CobblemonColonies.MODID)
 public class CmoncolEvents {
-	
-	private static final java.util.Map<java.util.UUID, net.minecraft.world.item.trading.MerchantOffers> POKEMART_TRADES_CACHE = new java.util.HashMap<>();
-	private static final java.util.Map<java.util.UUID, Integer> POKEMART_LEVEL_CACHE = new java.util.HashMap<>();
+
+    private static final java.util.Map<java.util.UUID, net.minecraft.world.item.trading.MerchantOffers> POKEMART_TRADES_CACHE = new java.util.HashMap<>();
+    private static final java.util.Map<java.util.UUID, Integer> POKEMART_LEVEL_CACHE = new java.util.HashMap<>();
 
     @SubscribeEvent
     public static void onNurseInteract(PlayerInteractEvent.EntityInteract event) {
         if (event.getTarget() instanceof AbstractEntityCitizen citizenEntity) {
             ICitizenData citizen = citizenEntity.getCitizenData();
-            
+
             if (citizen == null) return;
 
             IJob<?> job = citizen.getJob();
-            
+
             if (job instanceof NurseJob nurseJob) {
-                
+
                 if (!event.getLevel().isClientSide) {
                     Player player = event.getEntity();
-                    
+
                     if (player instanceof ServerPlayer serverPlayer) {
                         PlayerPartyStore party = Cobblemon.INSTANCE.getStorage().getParty(serverPlayer);
-                        
+
                         // Heal the player - maybe i should add a ghost over nurse joy just like the assistant?
-                        party.heal(); 
+                        party.heal();
                         player.sendSystemMessage(Component.literal("§aYour party has been healed by the Nurse!"));
                         citizenEntity.swing(InteractionHand.MAIN_HAND);
 
@@ -64,25 +68,25 @@ public class CmoncolEvents {
                             Tuple<BlockPos, BlockPos> corners = nurseJob.getWorkBuilding().getCorners();
                             if (corners != null) {
                                 BlockPos min = new BlockPos(
-                                    Math.min(corners.getA().getX(), corners.getB().getX()),
-                                    Math.min(corners.getA().getY(), corners.getB().getY()),
-                                    Math.min(corners.getA().getZ(), corners.getB().getZ())
+                                        Math.min(corners.getA().getX(), corners.getB().getX()),
+                                        Math.min(corners.getA().getY(), corners.getB().getY()),
+                                        Math.min(corners.getA().getZ(), corners.getB().getZ())
                                 );
                                 BlockPos max = new BlockPos(
-                                    Math.max(corners.getA().getX(), corners.getB().getX()),
-                                    Math.max(corners.getA().getY(), corners.getB().getY()),
-                                    Math.max(corners.getA().getZ(), corners.getB().getZ())
+                                        Math.max(corners.getA().getX(), corners.getB().getX()),
+                                        Math.max(corners.getA().getY(), corners.getB().getY()),
+                                        Math.max(corners.getA().getZ(), corners.getB().getZ())
                                 );
 
                                 for (BlockPos pos : BlockPos.betweenClosed(min, max)) {
                                     BlockState state = event.getLevel().getBlockState(pos);
                                     ResourceLocation id = BuiltInRegistries.BLOCK.getKey(state.getBlock());
-                                    
+
                                     if (id.getNamespace().equals("cobblemon") && id.getPath().contains("healing_machine")) {
                                         BlockEntity be = event.getLevel().getBlockEntity(pos);
                                         if (be instanceof HealingMachineBlockEntity healingMachine) {
                                             healingMachine.activate(player.getUUID(), party);
-                                            break; 
+                                            break;
                                         }
                                     }
                                 }
@@ -94,12 +98,12 @@ public class CmoncolEvents {
         }
     }
 
-	//ill just block everything, as i can catch, battle and do all sorts with the ghost pokemon!
+    //ill just block everything, as i can catch, battle and do all sorts with the ghost pokemon!
     @SubscribeEvent
     public static void onEntityInteractDummy(PlayerInteractEvent.EntityInteract event) {
-        if (event.getTarget().getTags().contains("cmoncol_dummy") || 
-            event.getTarget().getTags().stream().anyMatch(tag -> tag.startsWith("guard_partner_"))) {
-            
+        if (event.getTarget().getTags().contains("cmoncol_dummy") ||
+                event.getTarget().getTags().stream().anyMatch(tag -> tag.startsWith("guard_partner_"))) {
+
             event.setCanceled(true);
             event.setCancellationResult(InteractionResult.FAIL);
         }
@@ -107,9 +111,9 @@ public class CmoncolEvents {
 
     @SubscribeEvent
     public static void onEntityInteractSpecific(PlayerInteractEvent.EntityInteractSpecific event) {
-        if (event.getTarget().getTags().contains("cmoncol_dummy") || 
-            event.getTarget().getTags().stream().anyMatch(tag -> tag.startsWith("guard_partner_"))) {
-            
+        if (event.getTarget().getTags().contains("cmoncol_dummy") ||
+                event.getTarget().getTags().stream().anyMatch(tag -> tag.startsWith("guard_partner_"))) {
+
             event.setCanceled(true);
             event.setCancellationResult(InteractionResult.FAIL);
         }
@@ -117,15 +121,15 @@ public class CmoncolEvents {
 
     @SubscribeEvent
     public static void onEntityAttack(AttackEntityEvent event) {
-        if (event.getTarget().getTags().contains("cmoncol_dummy") || 
-            event.getTarget().getTags().stream().anyMatch(tag -> tag.startsWith("guard_partner_"))) {
+        if (event.getTarget().getTags().contains("cmoncol_dummy") ||
+                event.getTarget().getTags().stream().anyMatch(tag -> tag.startsWith("guard_partner_"))) {
             event.setCanceled(true);
         }
     }
-	
-	//didnt work for battling!
 
-	// Stop catching interactions for dummy pokemon hopefully this stops me from being able to catch them!!
+    //didnt work for battling!
+
+    // Stop catching interactions for dummy pokemon hopefully this stops me from being able to catch them!!
     @SubscribeEvent
     public static void onProjectileImpact(ProjectileImpactEvent event) {
         if (event.getRayTraceResult() instanceof EntityHitResult entityHit) {
@@ -133,7 +137,7 @@ public class CmoncolEvents {
                 event.setCanceled(true);
                 if (event.getProjectile().getOwner() instanceof Player player) {
                     if (!player.level().isClientSide) {
-                        player.hurt(player.damageSources().magic(), 4.0F); 
+                        player.hurt(player.damageSources().magic(), 4.0F);
                         player.sendSystemMessage(Component.literal("§cStop that Thief!"));
                     }
                 }
@@ -200,9 +204,19 @@ public class CmoncolEvents {
     }
 
     @SubscribeEvent
+    public static void onColonyFriendlyFire(net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent     event) {
+        Entity victim = event.getEntity();
+        Entity attacker = event.getSource().getEntity();
+        if (attacker != null && victim != null) {
+            if (isColonyAlly(victim) && isColonyAlly(attacker)) {
+                event.setCanceled(true);
+            }
+        }
+    }
+
+    @SubscribeEvent
     public static void onPokemonTickInterceptor(EntityTickEvent.Pre event) {
         if (!event.getEntity().level().isClientSide() && event.getEntity() instanceof PokemonEntity pokemon) {
-
             boolean isGuard = pokemon.getPersistentData().getBoolean("cmoncol:is_guard");
             boolean isDummy = pokemon.getTags().contains("cmoncol_dummy");
 
@@ -210,12 +224,47 @@ public class CmoncolEvents {
                 if (pokemon.getBrain().hasMemoryValue(MemoryModuleType.ATTACK_TARGET)) {
                     LivingEntity target = pokemon.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).get();
 
-                    if (isDummy || target instanceof Player) {
+                    if (target instanceof Player || isColonyAlly(target)) {
                         pokemon.getBrain().eraseMemory(MemoryModuleType.ATTACK_TARGET);
                         pokemon.setTarget(null);
                     }
                 }
             }
         }
+    }
+
+    private static boolean isColonyAlly(Entity entity) {
+        if (entity == null) return false;
+        if (entity instanceof AbstractEntityCitizen) return true;
+        if (entity.getPersistentData().getBoolean("cmoncol:is_guard")) return true;
+        if (entity.getTags().contains("cmoncol_dummy")) return true;
+        for (String tag : entity.getTags()) {
+            if (tag.startsWith("guard_partner_") || tag.startsWith("nurse_companion_")) return true;
+        }
+
+        return false;
+    }
+
+    public static void registerCobblemonEvents() {
+        CobblemonEvents.EVOLUTION_COMPLETE.subscribe(com.cobblemon.mod.common.api.Priority.NORMAL, event -> {
+            Pokemon evolvedPokemon = event.getPokemon();
+            if (evolvedPokemon.getPersistentData().contains("cmoncol:regional_bias")) {
+                String targetFormStr = evolvedPokemon.getPersistentData().getString("cmoncol:regional_bias").toLowerCase();
+                String aspect = targetFormStr;
+                if (aspect.equals("alola")) aspect = "alolan";
+                else if (aspect.equals("galar")) aspect = "galarian";
+                else if (aspect.equals("hisui")) aspect = "hisuian";
+                else if (aspect.equals("paldea")) aspect = "paldean";
+                if (!evolvedPokemon.getForm().getAspects().contains(aspect)) {
+
+                    try {
+                        com.cobblemon.mod.common.api.pokemon.PokemonProperties.Companion.parse(aspect).apply(evolvedPokemon);
+                    } catch (Exception e) {
+                    }
+                }
+            }
+
+            return Unit.INSTANCE;
+        });
     }
 }

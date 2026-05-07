@@ -30,6 +30,12 @@ public class CmoncolPackets {
         );
 
         registrar.playToServer(
+                UpdateGuardSettingsPacket.TYPE,
+                UpdateGuardSettingsPacket.STREAM_CODEC,
+                UpdateGuardSettingsPacket::handle
+        );
+
+        registrar.playToServer(
                 GymChallengePacket.TYPE,
                 GymChallengePacket.STREAM_CODEC,
                 GymChallengePacket::handle

@@ -13,12 +13,15 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
@@ -40,6 +43,17 @@ public class NurseJob extends AbstractJob<NurseJob.NurseAI, NurseJob> {
         String citizenName = this.getCitizen().getName();
         int index = Math.abs(citizenName.hashCode()) % COMPANIONS.length;
         return COMPANIONS[index];
+    }
+
+    @Override
+    public void onRemoval() {
+        super.onRemoval();
+        if (this.getCitizen() != null && this.getWorkBuilding() != null && this.getCitizen().getColony().getWorld() instanceof ServerLevel serverLevel) {
+            String myTag = "nurse_companion_" + this.getCitizen().getId();
+            BlockPos pos = this.getWorkBuilding().getPosition();
+            serverLevel.getEntitiesOfClass(PokemonEntity.class, new AABB(pos).inflate(64),
+                    e -> e.getTags().contains(myTag)).forEach(Entity::discard);
+        }
     }
 
     @Override
@@ -155,7 +169,7 @@ public class NurseJob extends AbstractJob<NurseJob.NurseAI, NurseJob> {
         }
 
         private void spawnCompanion(net.minecraft.server.level.ServerLevel serverLevel, Mob nurse) {
-            String myTag = "nurse_companion_" + nurse.getUUID();
+            String myTag = "nurse_companion_" + job.getCitizen().getId();
             serverLevel.getEntitiesOfClass(PokemonEntity.class, nurse.getBoundingBox().inflate(32), 
                 e -> e.getTags().contains(myTag)).forEach(net.minecraft.world.entity.Entity::discard);
 

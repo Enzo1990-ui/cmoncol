@@ -1,0 +1,15 @@
+{
+    "icon": "icon.png",
+    "name": "CC Original Style",
+    "authors": [
+        "OGTEnzoHD"
+    ],
+    "desc": "The original style inspired by the pokemon games",
+    "mods": [
+        "structurize",
+        "minecolonies",
+        "cobblemon"
+    ],
+    "version": "1",
+    "pack-format": "1"
+}

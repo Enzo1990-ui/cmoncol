@@ -1,0 +1,15 @@
+{
+    "icon": "pagoda.png",
+    "name": "CC - Pagoda Style",
+    "authors": [
+        "WIP - By KosmosNova"
+    ],
+    "desc": "New style of buildings as a work in progress by KosmosNova",
+    "mods": [
+        "structurize",
+        "minecolonies",
+        "cobblemon"
+    ],
+    "version": "1",
+    "pack-format": "1"
+}

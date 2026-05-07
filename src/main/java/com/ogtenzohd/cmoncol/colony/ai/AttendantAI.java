@@ -236,10 +236,8 @@ public class AttendantAI extends AbstractEntityAIBasic<AttendantJob, DaycareBuil
     }
 
     private Pokemon createOffspring(Pokemon parentA, Pokemon parentB, java.util.UUID ownerUUID) {
-        Pokemon nonDitto = parentA.getSpecies().getName().equalsIgnoreCase("ditto") ? parentB : parentA;
         Pokemon mother = (parentA.getGender() == Gender.FEMALE || parentB.getSpecies().getName().equalsIgnoreCase("ditto")) ? parentA : parentB;
-
-        com.cobblemon.mod.common.pokemon.Species baseSpecies = nonDitto.getSpecies();
+        com.cobblemon.mod.common.pokemon.Species baseSpecies = mother.getSpecies();
         while (baseSpecies.getPreEvolution() != null) {
             baseSpecies = baseSpecies.getPreEvolution().getSpecies();
         }
@@ -247,6 +245,16 @@ public class AttendantAI extends AbstractEntityAIBasic<AttendantJob, DaycareBuil
 
         String itemA = getHeldItemId(parentA);
         String itemB = getHeldItemId(parentB);
+
+        boolean aHasEverstone = itemA.equals("cobblemon:everstone");
+        boolean bHasEverstone = itemB.equals("cobblemon:everstone");
+
+        com.cobblemon.mod.common.pokemon.FormData parentForm = null;
+        if (mother == parentA && aHasEverstone) {
+            parentForm = parentA.getForm();
+        } else if (mother == parentB && bHasEverstone) {
+            parentForm = parentB.getForm();
+        }
 
         CCConfig.BreedingMode mode = CCConfig.INSTANCE.breedingMode.get();
         boolean isMasuda = !Objects.equals(parentA.getOriginalTrainer(), parentB.getOriginalTrainer());
@@ -283,10 +291,18 @@ public class AttendantAI extends AbstractEntityAIBasic<AttendantJob, DaycareBuil
 
         String propsString = "species=" + speciesId + " level=1";
         if (forceShiny) propsString += " shiny=yes";
+
+        if (parentForm != null && !parentForm.getName().equalsIgnoreCase("normal")) {
+            for (String aspect : parentForm.getAspects()) {
+                propsString += " " + aspect;
+            }
+        }
+
         Pokemon child = PokemonProperties.Companion.parse(propsString).create();
 
-        boolean aHasEverstone = itemA.equals("minecraft:everstone");
-        boolean bHasEverstone = itemB.equals("minecraft:everstone");
+        if (parentForm != null && !parentForm.getName().equalsIgnoreCase("normal")) {
+            child.getPersistentData().putString("cmoncol:regional_bias", parentForm.getName());
+        }
 
         if (mode == CCConfig.BreedingMode.EASY) {
             child.setNature((Math.random() < 0.5) ? parentA.getNature() : parentB.getNature());

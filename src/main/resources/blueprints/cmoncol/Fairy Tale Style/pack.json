@@ -1,0 +1,17 @@
+{
+    "icon": "icon.png",
+    "name": "CC - Fairytale style ",
+    "authors": [
+        "OGTEnzoHD"
+    ],
+    "desc": "Inspired by the style from stylecolonies",
+    "mods": [
+        "structurize",
+		"minecolonies",
+		"create",
+		"quark",
+		"twilightforest"
+    ],
+    "version": "1",
+    "pack-format": "1"
+}

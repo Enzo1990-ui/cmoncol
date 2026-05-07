@@ -79,6 +79,7 @@ public class CmoncolRegistries {
     public static BuildingEntry.ModuleProducer<ScienceLabJournalProxyModule, ScienceLabJournalProxyModuleView> SCIENCELAB_JOURNAL_MODULE;
     public static BuildingEntry.ModuleProducer<WonderTradeProxyModule, WonderTradeProxyModuleView> WONDER_TRADE_PROXY_MODULE;
     public static BuildingEntry.ModuleProducer<PokemartProxyModule, PokemartProxyModuleView> POKEMART_PROXY_MODULE;
+    public static BuildingEntry.ModuleProducer<PokemonGuardProxyModule, PokemonGuardProxyModuleView> POKEMON_GUARD_PROXY_MODULE;
 
     @SubscribeEvent
     public static void onRegister(RegisterEvent event) {
@@ -155,11 +156,12 @@ public class CmoncolRegistries {
             POKEBALLWORKSHOP_RECIPES = new BuildingEntry.ModuleProducer<>("pokeballworkshop_recipes", () -> new PokeballWorkshopBuilding.CraftingModule(POKEBALLWORKSHOP_JOB_ENTRY), () -> PokeballWorkshopBuildingView.PokeballCraftingModuleView::new);
             SCIENCELAB_WORK = new BuildingEntry.ModuleProducer<>("sciencelab_work", () -> new WorkerBuildingModule(SCIENCELAB_JOB_ENTRY, Skill.Intelligence, Skill.Knowledge, false, b -> 1), () -> WorkerBuildingModuleView::new);
             POKECENTER_WORK = new BuildingEntry.ModuleProducer<>("pokecenter_work", () -> new WorkerBuildingModule(NURSE_JOB_ENTRY, Skill.Intelligence, Skill.Adaptability, false, b -> 1), () -> WorkerBuildingModuleView::new);
-            POKEMON_GUARD_WORK = new BuildingEntry.ModuleProducer<>("pokemon_guard_work", () -> new WorkerBuildingModule(POKEMON_GUARD_JOB_ENTRY, Skill.Athletics, Skill.Strength, false, b -> 5), () -> WorkerBuildingModuleView::new);
+            POKEMON_GUARD_WORK = new BuildingEntry.ModuleProducer<>("worker", () -> new WorkerBuildingModule(POKEMON_GUARD_JOB_ENTRY, Skill.Athletics, Skill.Strength, false, b -> {int lvl = b.getBuildingLevel();if (lvl >= 5) return 3;if (lvl >= 3) return 2;return 1;}), () -> WorkerBuildingModuleView::new);
             GYM_WORK = new BuildingEntry.ModuleProducer<>("gym_work", () -> new WorkerBuildingModule(GYM_JOB_ENTRY, Skill.Knowledge, Skill.Mana, false, b -> 1), () -> WorkerBuildingModuleView::new);
             WONDER_TRADER_WORK = new BuildingEntry.ModuleProducer<>("wonder_trader_work", () -> new WorkerBuildingModule(WONDER_TRADER_JOB_ENTRY, Skill.Mana, Skill.Knowledge, false, b -> 1), () -> WorkerBuildingModuleView::new);
             POKEMERCHANT_WORK = new BuildingEntry.ModuleProducer<>("pokemerchant_work", () -> new WorkerBuildingModule(POKEMERCHANT_JOB_ENTRY, Skill.Adaptability, Skill.Intelligence, false, b -> 1), () -> WorkerBuildingModuleView::new);
             RANGER_WORK = new BuildingEntry.ModuleProducer<>("ranger_work", () -> new WorkerBuildingModule(RANGER_JOB_ENTRY, Skill.Agility, Skill.Athletics, false, b -> 1), () -> WorkerBuildingModuleView::new);
+            POKEMON_GUARD_PROXY_MODULE = new BuildingEntry.ModuleProducer<>("guard_proxy", PokemonGuardProxyModule::new, () -> PokemonGuardProxyModuleView::new);
 
             // REGISTER BUILDINGS
             ResourceLocation pastLoc = ResourceLocation.fromNamespaceAndPath(CobblemonColonies.MODID, "colony_pasture");
@@ -257,6 +259,7 @@ public class CmoncolRegistries {
                     .addBuildingModuleProducer(BuildingModules.GUARD_SETTINGS)
                     .addBuildingModuleProducer(BuildingModules.GUARD_ENTITY_LIST)
                     .addBuildingModuleProducer(BuildingModules.STATS_MODULE)
+                    .addBuildingModuleProducer(POKEMON_GUARD_PROXY_MODULE)
                     .createBuildingEntry();
             event.register(BLD_KEY, pguardBldLoc, () -> POKEMON_GUARD_BUILDING_ENTRY);
 

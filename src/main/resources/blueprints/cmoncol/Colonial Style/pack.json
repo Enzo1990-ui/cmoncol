@@ -1,0 +1,15 @@
+{
+    "icon": "comingsoon.png",
+    "name": "CC - Colonial Style",
+    "authors": [
+        "COMING SOON"
+    ],
+    "desc": "COMING SOON",
+    "mods": [
+        "structurize",
+        "minecolonies",
+        "cobblemon"
+    ],
+    "version": "1",
+    "pack-format": "1"
+}

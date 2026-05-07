@@ -1,0 +1,16 @@
+{
+    "icon": "wooden.png",
+    "name": "CC Minecolonies Style",
+    "authors": [
+		"Seineko",
+		"OGTEnzoHD"
+    ],
+    "desc": "This style is inspired by the Minecolonies Style byt the Minecolonies Team",
+    "mods": [
+        "structurize",
+        "minecolonies",
+        "cobblemon"
+    ],
+    "version": "1",
+    "pack-format": "1"
+}

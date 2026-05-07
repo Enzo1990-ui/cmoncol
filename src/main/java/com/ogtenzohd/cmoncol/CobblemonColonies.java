@@ -46,6 +46,7 @@ public class CobblemonColonies {
         LOGGER.info("[Cobblemon Colonies] Common Setup Starting...");
         event.enqueueWork(() -> {
             com.ogtenzohd.cmoncol.util.RancherRecipeManager.loadLocalConfigs();
+            com.ogtenzohd.cmoncol.events.CmoncolEvents.registerCobblemonEvents();
 
             Map<String, Map<EventType, List<Tuple<SoundEvent, SoundEvent>>>> sounds = ModSoundEvents.CITIZEN_SOUND_EVENTS;
             String[] myJobs = {"rancher", "attendant", "ev_trainer","harvester", "pokeball_workshop", "nurse", "science_lab", "pokemon_guard", "gym", "wonder_trader", "pokemerchant"};

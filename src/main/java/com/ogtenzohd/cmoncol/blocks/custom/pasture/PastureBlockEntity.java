@@ -4,6 +4,7 @@ import com.minecolonies.core.tileentities.TileEntityColonyBuilding;
 import com.minecolonies.core.colony.buildings.AbstractBuilding;
 import com.minecolonies.api.colony.buildings.IBuilding;
 import com.ogtenzohd.cmoncol.registration.CmoncolReg;
+import com.ogtenzohd.cmoncol.util.DummyEntityHelper;
 import com.ogtenzohd.cmoncol.util.RancherRecipeManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -86,28 +87,9 @@ public class PastureBlockEntity extends TileEntityColonyBuilding {
                 startupDelay--;
                 if (startupDelay == 0) {
                     BlockPos center = getGardenCenter();
-                    AABB scanArea = new AABB(center).inflate(48);
-                    String myTag = getBuildingTag();
-
-                    List<PokemonEntity> ghosts = serverLevel.getEntitiesOfClass(PokemonEntity.class, scanArea,
-                            e -> e.getTags().contains("cmoncol_dummy"));
-
-                    for (PokemonEntity ghost : ghosts) {
-                        boolean belongsToNeighbor = false;
-                        for (String tag : ghost.getTags()) {
-                            if (tag.startsWith("cmoncol_origin_") && !tag.equals(myTag)) {
-                                belongsToNeighbor = true;
-                                break;
-                            }
-                        }
-
-                        if (!belongsToNeighbor) {
-                            ghost.discard();
-                        }
-                    }
-
-                    for (PastureSlot pastureSlot : storedPokemon) {
-                        spawnPokemonEntity(pastureSlot);
+                    DummyEntityHelper.clearGhostsForBuilding(serverLevel, center, this.getBlockPos(), 48);
+                    for (PastureSlot slot : storedPokemon) {
+                        spawnPokemonEntity(slot);
                     }
                 }
                 return;
@@ -204,10 +186,9 @@ public class PastureBlockEntity extends TileEntityColonyBuilding {
                 pokeEntity.restrictTo(center, 12);
 
                 pokeEntity.getPokemon().setUuid(UUID.randomUUID());
-                pokeEntity.getTags().add("cmoncol_dummy");
-                pokeEntity.getTags().add(getBuildingTag());
                 pokeEntity.setInvulnerable(true);
                 pokeEntity.setPersistenceRequired();
+                DummyEntityHelper.applyDummyTags(pokeEntity, this.getBlockPos());
 
                 pokeEntity.setCustomName(Component.literal(slot.ownerName + "'s " + pokeEntity.getPokemon().getDisplayName(true).getString()));
                 pokeEntity.setCustomNameVisible(true);

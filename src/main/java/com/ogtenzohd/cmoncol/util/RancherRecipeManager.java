@@ -4,9 +4,11 @@ import com.google.gson.*;
 import com.ogtenzohd.cmoncol.CobblemonColonies;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -20,16 +22,10 @@ public class RancherRecipeManager {
     public record Drop(Item item, int min, int max, float chance) {
     }
 
-    public record RancherRecipe(Item tool, List<Drop> drops) {
+    public record RancherRecipe(Ingredient tool, List<Drop> drops) {
         public String getLabel() {
             if (drops.isEmpty()) return "Nothing";
-
-            String toolSuffix = (tool != Items.AIR) ? " (" + new ItemStack(tool).getHoverName().getString() + ")" : "";
-
-            if (drops.size() > 1) {
-                return "All Drops" + toolSuffix;
-            }
-
+            String toolSuffix = (tool != Ingredient.EMPTY) ? " (Has Tool Requirement)" : "";
             return new ItemStack(drops.getFirst().item()).getHoverName().getString() + toolSuffix;
         }
     }
@@ -1044,6 +1040,15 @@ public class RancherRecipeManager {
         RECIPES.clear();
     }
 
+    private static Ingredient parseIngredient(String string) {
+        if (string == null || string.equalsIgnoreCase("none")) return Ingredient.EMPTY;
+        if (string.startsWith("#")) {
+            return Ingredient.of(ItemTags.create(ResourceLocation.parse(string.substring(1))));
+        }
+        Item item = BuiltInRegistries.ITEM.get(ResourceLocation.parse(string));
+        return item == Items.AIR ? Ingredient.EMPTY : Ingredient.of(item);
+    }
+
     public static void parseAndAddRecipes(JsonObject root) {
         String currentSpecies = "UNKNOWN";
         try {
@@ -1062,12 +1067,9 @@ public class RancherRecipeManager {
                 for (JsonElement element : recipesArray) {
                     JsonObject obj = element.getAsJsonObject();
 
-                    Item tool = Items.AIR;
+                    Ingredient tool = Ingredient.EMPTY;
                     if (obj.has("tool")) {
-                        String toolString = obj.get("tool").getAsString();
-                        if (!toolString.equalsIgnoreCase("none")) {
-                            tool = BuiltInRegistries.ITEM.get(ResourceLocation.parse(toolString));
-                        }
+                        tool = parseIngredient(obj.get("tool").getAsString());
                     }
 
                     List<Drop> drops = new ArrayList<>();

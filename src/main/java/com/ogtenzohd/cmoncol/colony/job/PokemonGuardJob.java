@@ -35,4 +35,9 @@ public class PokemonGuardJob extends AbstractJobGuard<PokemonGuardJob> {
             AttributeModifierUtils.addHealthModifier(citizen, healthModLevel);
         }
     }
+
+
+    public boolean requiresHouse() {
+        return false;
+    }
 }

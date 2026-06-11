@@ -1,5 +1,6 @@
 package com.ogtenzohd.cmoncol.network;
 
+import com.minecolonies.api.colony.IColony;
 import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.api.storage.party.PlayerPartyStore;
 import com.cobblemon.mod.common.pokemon.Pokemon;
@@ -44,12 +45,21 @@ public record ProxyActionPacket(BlockPos pos, int actionId, int targetSlot) impl
             
             PlayerPartyStore party = Cobblemon.INSTANCE.getStorage().getParty(serverPlayer);
             RegistryAccess regAccess = serverPlayer.level().registryAccess();
-            String pName = serverPlayer.getName().getString(); 
+            String pName = serverPlayer.getName().getString();
 
-            // buttons for pasture! - labeling so i stop modifing the wrong button
+            // buttons for pasture!
             if (player.level().getBlockEntity(payload.pos()) instanceof PastureBlockEntity pasture) {
-				// DEPOSIT!!!!! \/\/\/
+                IColony colony = com.minecolonies.api.colony.IColonyManager.getInstance().getIColony(serverPlayer.level(), payload.pos());
+
+                // DEPOSIT!!!!! \/\/\/
                 if (payload.actionId() == 0) {
+                    boolean hasPermission = colony == null || colony.getPermissions().hasPermission(serverPlayer, com.minecolonies.api.colony.permissions.Action.ACCESS_HUTS);
+
+                    if (!hasPermission) {
+                        serverPlayer.displayClientMessage(Component.literal("§cYou do not have permission to use this Pasture."), true);
+                        return;
+                    }
+
                     Pokemon monToDeposit = party.get(payload.targetSlot());
                     if (monToDeposit != null && pasture.canAcceptMore(player.getUUID())) {
                         CompoundTag nbt = monToDeposit.saveToNBT(regAccess, new CompoundTag());
@@ -57,25 +67,36 @@ public record ProxyActionPacket(BlockPos pos, int actionId, int targetSlot) impl
                         pasture.addPokemon(player.getUUID(), pName, nbt);
                     }
                 }
-				// WITHDRAW!!!!! \/\/\/
+                // WITHDRAW!!!!! \/\/\/
                 else if (payload.actionId() == 1) {
                     if (pasture.getStoredPokemon().size() > payload.targetSlot()) {
                         PastureBlockEntity.PastureSlot slot = pasture.getStoredPokemon().get(payload.targetSlot());
-                        if (slot.ownerUUID.equals(player.getUUID())) {
+                        boolean isOwner = slot.ownerUUID.equals(player.getUUID());
+                        boolean isMayor = colony != null && player.getUUID().equals(colony.getPermissions().getOwner());
+
+                        if (isOwner || isMayor) {
                             Pokemon mon = new Pokemon();
                             mon.loadFromNBT(regAccess, slot.pokemonNBT);
-                            
+
                             if (party.add(mon) || Cobblemon.INSTANCE.getStorage().getPC(serverPlayer).add(mon)) {
                                 pasture.removePokemon(payload.targetSlot());
+                                if (!isOwner) {
+                                    serverPlayer.displayClientMessage(Component.literal("§eEmergency Withdrawn: " + mon.getDisplayName(true).getString()), true);
+                                }
                             }
+                        } else {
+                            serverPlayer.displayClientMessage(Component.literal("§cYou can only withdraw your own Pokemon!"), true);
                         }
                     }
                 }
-				// TOGLLE!!!!! \/\/\/
+                // TOGGLE!!!!! \/\/\/
                 else if (payload.actionId() == 7) {
-                    pasture.toggleRecipe(payload.targetSlot());
+                    boolean hasPermission = colony == null || colony.getPermissions().hasPermission(serverPlayer, com.minecolonies.api.colony.permissions.Action.ACCESS_HUTS);
+                    if (hasPermission) {
+                        pasture.toggleRecipe(payload.targetSlot());
+                    }
                 }
-            } 
+            }
             
             // buttons for EV-Trainer!
             else if (player.level().getBlockEntity(payload.pos()) instanceof TrainerAcadamyBlockEntity gym) {

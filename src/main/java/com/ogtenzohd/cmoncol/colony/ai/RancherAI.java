@@ -10,9 +10,8 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.Containers;
 import net.neoforged.neoforge.capabilities.Capabilities;
@@ -24,7 +23,7 @@ public class RancherAI extends AbstractEntityAIBasic<RancherJob, PastureBuilding
     private enum State { MOVE_TO_TARGET, CHECK_POKEMON, CHECK_TOOL, WORK, RETURN_TO_HUT, DEPOSIT_ITEMS }
     private State currentState = State.MOVE_TO_TARGET;
     private int workTimer = 0;
-    private Item requiredTool = Items.AIR;
+    private Ingredient requiredTool = Ingredient.EMPTY;
     private net.minecraft.world.entity.Entity currentTargetPokemon = null;
     
     private int lastSlotIndex = -1;
@@ -46,7 +45,7 @@ public class RancherAI extends AbstractEntityAIBasic<RancherJob, PastureBuilding
                     BlockPos movePos = (currentTargetPokemon != null) ? currentTargetPokemon.blockPosition() : buildingPos;
                     if (entity.distanceToSqr(movePos.getX(), movePos.getY(), movePos.getZ()) > 9) {
                         entity.getNavigation().moveTo(movePos.getX(), movePos.getY(), movePos.getZ(), 1.0);
-                    } else { 
+                    } else {
                         entity.getNavigation().stop();
                         currentState = (currentTargetPokemon != null) ? State.WORK : State.CHECK_POKEMON;
                     }
@@ -60,31 +59,31 @@ public class RancherAI extends AbstractEntityAIBasic<RancherJob, PastureBuilding
                         if (size == 0) return;
 
                         int startIndex = (lastSlotIndex + 1) % size;
-                        
+
                         for (int i = 0; i < size; i++) {
                             int currentIndex = (startIndex + i) % size;
-                            
+
                             PastureBlockEntity.PastureSlot slot = pasture.getStoredPokemon().get(currentIndex);
                             Pokemon storedMon = new Pokemon();
                             storedMon.loadFromNBT(registryAccess, slot.pokemonNBT);
                             String speciesName = storedMon.getSpecies().getName().toLowerCase();
-                            
+
                             RancherRecipeManager.RancherRecipe recipe = RancherRecipeManager.getRecipe(speciesName, slot.selectedRecipe);
                             if (recipe != null) {
                                 net.minecraft.world.entity.Entity foundEntity = null;
                                 if (slot.spawnedEntityUUID != null && entity.level() instanceof net.minecraft.server.level.ServerLevel serverLevel) {
                                     foundEntity = serverLevel.getEntity(slot.spawnedEntityUUID);
                                 }
-                                
+
                                 if (foundEntity != null && foundEntity.isAlive()) {
                                     this.activeRecipe = recipe;
                                     this.requiredTool = recipe.tool();
                                     this.currentTargetPokemon = foundEntity;
                                     this.lastSlotIndex = currentIndex;
-                                    
+
                                     currentState = State.CHECK_TOOL;
                                     workTimer = 100;
-                                    return; 
+                                    return;
                                 }
                             }
                         }
@@ -92,10 +91,12 @@ public class RancherAI extends AbstractEntityAIBasic<RancherJob, PastureBuilding
                     break;
 
                 case CHECK_TOOL:
-                    if (hasToolInBuilding(requiredTool, entity)) { 
-                        currentState = State.MOVE_TO_TARGET; 
+                    if (hasToolInBuilding(requiredTool, entity)) {
+                        currentState = State.MOVE_TO_TARGET;
                     } else {
-                        checkIfRequestForItemExistOrCreateAsync(new ItemStack(requiredTool));
+                        if (!requiredTool.isEmpty() && requiredTool.getItems().length > 0) {
+                            checkIfRequestForItemExistOrCreateAsync(new ItemStack(requiredTool.getItems()[0].getItem()));
+                        }
                         entity.getLookControl().setLookAt(buildingPos.getX(), buildingPos.getY(), buildingPos.getZ());
                     }
                     break;
@@ -112,7 +113,7 @@ public class RancherAI extends AbstractEntityAIBasic<RancherJob, PastureBuilding
                         if (finalRecipe == null && currentTargetPokemon != null) {
                              finalRecipe = findRecipeForEntity(buildingPos, currentTargetPokemon, entity.level().registryAccess());
                         }
-                        
+
                         if (finalRecipe != null && handleToolUsage(requiredTool, entity)) {
                             executeWork(finalRecipe, entity);
                         }
@@ -132,11 +133,11 @@ public class RancherAI extends AbstractEntityAIBasic<RancherJob, PastureBuilding
                 case DEPOSIT_ITEMS:
                     IItemHandler citizenInv = entity.getCapability(Capabilities.ItemHandler.ENTITY, null);
                     IItemHandler buildingInv = job.getWorkBuilding().getItemHandlerCap();
-                    
+
                     if (citizenInv != null && buildingInv != null) {
                         for (int i = 0; i < citizenInv.getSlots(); i++) {
                             ItemStack stack = citizenInv.getStackInSlot(i);
-                            if (!stack.isEmpty() && stack.getItem() != requiredTool) {
+                            if (!stack.isEmpty() && !requiredTool.test(stack)) {
                                 ItemStack remaining = ItemHandlerHelper.insertItemStacked(buildingInv, stack, false);
                                 if (remaining.getCount() < stack.getCount()) {
                                     citizenInv.extractItem(i, stack.getCount() - remaining.getCount(), false);
@@ -144,10 +145,10 @@ public class RancherAI extends AbstractEntityAIBasic<RancherJob, PastureBuilding
                             }
                         }
                     }
-                    
+
                     activeRecipe = null;
-                    requiredTool = Items.AIR;
-                    currentTargetPokemon = null; 
+                    requiredTool = Ingredient.EMPTY;
+                    currentTargetPokemon = null;
                     currentState = State.MOVE_TO_TARGET;
                     break;
             }
@@ -194,61 +195,64 @@ public class RancherAI extends AbstractEntityAIBasic<RancherJob, PastureBuilding
         }
     }
 
-    private boolean hasToolInBuilding(Item tool, LivingEntity entity) {
-        if (tool == Items.AIR) return true;
-        if (entity.getMainHandItem().getItem() == tool) return true;
+    private boolean hasToolInBuilding(Ingredient toolIngredient, LivingEntity entity) {
+        if (toolIngredient == null || toolIngredient.isEmpty()) return true;
+        if (toolIngredient.test(entity.getMainHandItem())) return true;
         IItemHandler citizenInv = entity.getCapability(Capabilities.ItemHandler.ENTITY, null);
         if (citizenInv != null) {
             for (int i = 0; i < citizenInv.getSlots(); i++) {
-                if (citizenInv.getStackInSlot(i).getItem() == tool) return true;
+                if (toolIngredient.test(citizenInv.getStackInSlot(i))) return true;
             }
         }
+
         IItemHandler buildingInv = job.getWorkBuilding().getItemHandlerCap();
         if (buildingInv != null) {
             for (int i = 0; i < buildingInv.getSlots(); i++) {
-                if (buildingInv.getStackInSlot(i).getItem() == tool) return true;
+                if (toolIngredient.test(buildingInv.getStackInSlot(i))) return true;
             }
         }
         return false;
     }
 
-    private boolean handleToolUsage(Item tool, LivingEntity entity) {
-        if (tool == Items.AIR) return true;
+    private boolean handleToolUsage(Ingredient toolIngredient, LivingEntity entity) {
+        if (toolIngredient == null || toolIngredient.isEmpty()) return true;
         ItemStack mainHand = entity.getMainHandItem();
-        if (mainHand.getItem() == tool) {
-             if (mainHand.isDamageableItem()) {
-                 mainHand.hurtAndBreak(1, entity, EquipmentSlot.MAINHAND);
-             } else {
-                 mainHand.shrink(1); 
-             }
-             return true;
+        if (toolIngredient.test(mainHand)) {
+            if (mainHand.isDamageableItem()) {
+                mainHand.hurtAndBreak(1, entity, EquipmentSlot.MAINHAND);
+            } else {
+                mainHand.shrink(1);
+            }
+            return true;
         }
+
         IItemHandler citizenInv = entity.getCapability(Capabilities.ItemHandler.ENTITY, null);
         if (citizenInv != null) {
             for (int i = 0; i < citizenInv.getSlots(); i++) {
                 ItemStack stack = citizenInv.getStackInSlot(i);
-                if (stack.getItem() == tool) {
+                if (toolIngredient.test(stack)) {
                     if (stack.isDamageableItem()) {
                         stack.hurtAndBreak(1, entity, EquipmentSlot.MAINHAND);
                     } else {
-                        citizenInv.extractItem(i, 1, false); 
+                        citizenInv.extractItem(i, 1, false);
                     }
                     return true;
                 }
             }
         }
+
         IItemHandler buildingInv = job.getWorkBuilding().getItemHandlerCap();
         if (buildingInv != null) {
             for (int i = 0; i < buildingInv.getSlots(); i++) {
                 ItemStack stack = buildingInv.getStackInSlot(i);
-                if (stack.getItem() == tool) {
+                if (toolIngredient.test(stack)) {
                     if (!stack.isDamageableItem()) {
-                        buildingInv.extractItem(i, 1, false); 
+                        buildingInv.extractItem(i, 1, false);
                     }
                     return true;
                 }
             }
         }
-        return false; 
+        return false;
     }
 }

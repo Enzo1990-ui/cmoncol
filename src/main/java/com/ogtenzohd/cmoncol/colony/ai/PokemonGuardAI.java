@@ -1,8 +1,11 @@
 package com.ogtenzohd.cmoncol.colony.ai;
 
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
+import com.minecolonies.api.colony.ICitizenData;
 import com.minecolonies.api.entity.ai.combat.threat.IThreatTableEntity;
 import com.minecolonies.api.equipment.ModEquipmentTypes;
+import com.minecolonies.core.colony.buildings.modules.BuildingModules;
+import com.minecolonies.core.colony.buildings.modules.BedHandlingModule;
 import com.minecolonies.core.entity.ai.workers.guard.AbstractEntityAIGuard;
 import com.minecolonies.core.entity.ai.workers.guard.KnightCombatAI;
 import com.minecolonies.core.entity.citizen.EntityCitizen;
@@ -81,6 +84,22 @@ public class PokemonGuardAI extends AbstractEntityAIGuard<PokemonGuardJob, Pokem
 
         job.getCitizen().getEntity().ifPresent(guard -> {
             if (guard.level() instanceof net.minecraft.server.level.ServerLevel serverLevel) {
+                ICitizenData citizen = job.getCitizen();
+                PokemonGuardBuilding building = (PokemonGuardBuilding) job.getWorkBuilding();
+                if (citizen.getHomeBuilding() != building) {
+                    citizen.setHomeBuilding(building);
+                }
+
+                BedHandlingModule bedModule = (BedHandlingModule) building.getModule(BuildingModules.BED);
+                if (bedModule != null) {
+                    java.util.List<BlockPos> beds = bedModule.getRegisteredBlocks();
+                    if (beds != null && !beds.isEmpty()) {
+                        BlockPos bedPos = beds.get(0);
+                        if (citizen.getBedPos() == null || !citizen.getBedPos().equals(bedPos)) {
+                            citizen.setBedPos(bedPos);
+                        }
+                    }
+                }
 
                 int myCitizenId = job.getCitizen().getId();
                 String expectedSpecies = "growlithe";
@@ -88,11 +107,11 @@ public class PokemonGuardAI extends AbstractEntityAIGuard<PokemonGuardJob, Pokem
 
                 if (guard.tickCount % 100 == 0) {
                     String targetTag = "guard_partner_" + guard.getUUID();
-                    java.util.List<com.cobblemon.mod.common.entity.pokemon.PokemonEntity> clones = serverLevel.getEntitiesOfClass(
-                            com.cobblemon.mod.common.entity.pokemon.PokemonEntity.class,
-                            guard.getBoundingBox().inflate(128.0D),
-                            entity -> entity.getTags().contains(targetTag)
-                    );
+                    java.util.List<com.cobblemon.mod.common.entity.pokemon.PokemonEntity> clones = serverLevel
+                            .getEntitiesOfClass(
+                                    com.cobblemon.mod.common.entity.pokemon.PokemonEntity.class,
+                                    guard.getBoundingBox().inflate(128.0D),
+                                    entity -> entity.getTags().contains(targetTag));
 
                     for (com.cobblemon.mod.common.entity.pokemon.PokemonEntity clone : clones) {
                         if (partnerUUID != null && !clone.getUUID().equals(partnerUUID)) {
@@ -142,7 +161,8 @@ public class PokemonGuardAI extends AbstractEntityAIGuard<PokemonGuardJob, Pokem
                                 net.minecraft.world.phys.Vec3 dir = targetPos.subtract(poke.position()).normalize();
                                 poke.setDeltaMovement(dir.scale(0.35));
                                 serverLevel.sendParticles(net.minecraft.core.particles.ParticleTypes.PORTAL,
-                                        poke.getX(), poke.getY() + (poke.getBbHeight() / 2.0), poke.getZ(), 5, 0.5, 0.5, 0.5, 0.0);
+                                        poke.getX(), poke.getY() + (poke.getBbHeight() / 2.0), poke.getZ(), 5, 0.5, 0.5,
+                                        0.5, 0.0);
 
                                 if (distToGuard < 6.25) {
                                     isPhasing = false;
@@ -172,11 +192,11 @@ public class PokemonGuardAI extends AbstractEntityAIGuard<PokemonGuardJob, Pokem
                     spawnTimer--;
                     if (spawnTimer <= 0) {
                         String targetTag = "guard_partner_" + guard.getUUID();
-                        java.util.List<com.cobblemon.mod.common.entity.pokemon.PokemonEntity> lostPokemon = serverLevel.getEntitiesOfClass(
-                                com.cobblemon.mod.common.entity.pokemon.PokemonEntity.class,
-                                guard.getBoundingBox().inflate(128.0D),
-                                entity -> entity.getTags().contains(targetTag)
-                        );
+                        java.util.List<com.cobblemon.mod.common.entity.pokemon.PokemonEntity> lostPokemon = serverLevel
+                                .getEntitiesOfClass(
+                                        com.cobblemon.mod.common.entity.pokemon.PokemonEntity.class,
+                                        guard.getBoundingBox().inflate(128.0D),
+                                        entity -> entity.getTags().contains(targetTag));
 
                         if (!lostPokemon.isEmpty()) {
                             com.cobblemon.mod.common.entity.pokemon.PokemonEntity recoveredPoke = lostPokemon.get(0);
@@ -196,10 +216,13 @@ public class PokemonGuardAI extends AbstractEntityAIGuard<PokemonGuardJob, Pokem
         });
     }
 
-    private void spawnPartner(net.minecraft.world.entity.LivingEntity guard, net.minecraft.server.level.ServerLevel level, String chosenSpecies, int spawnLevel) {
+    private void spawnPartner(net.minecraft.world.entity.LivingEntity guard,
+            net.minecraft.server.level.ServerLevel level, String chosenSpecies, int spawnLevel) {
         String propsString = "species=" + chosenSpecies + " level=" + spawnLevel + " uncatchable=true";
-        com.cobblemon.mod.common.pokemon.Pokemon mon = com.cobblemon.mod.common.api.pokemon.PokemonProperties.Companion.parse(propsString).create();
-        net.minecraft.world.entity.EntityType<?> type = net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE.get(net.minecraft.resources.ResourceLocation.parse("cobblemon:pokemon"));
+        com.cobblemon.mod.common.pokemon.Pokemon mon = com.cobblemon.mod.common.api.pokemon.PokemonProperties.Companion
+                .parse(propsString).create();
+        net.minecraft.world.entity.EntityType<?> type = net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE
+                .get(net.minecraft.resources.ResourceLocation.parse("cobblemon:pokemon"));
 
         net.minecraft.world.entity.Entity newEntity = type.create(level);
         if (newEntity instanceof com.cobblemon.mod.common.entity.pokemon.PokemonEntity pokeEntity) {
@@ -218,23 +241,30 @@ public class PokemonGuardAI extends AbstractEntityAIGuard<PokemonGuardJob, Pokem
     }
 
     private boolean isFriendly(LivingEntity target, LivingEntity guard) {
-        if (target == null) return false;
-        if (target == guard) return true;
+        if (target == null)
+            return false;
+        if (target == guard)
+            return true;
 
         if (target instanceof com.minecolonies.api.entity.citizen.AbstractEntityCitizen targetCitizen &&
                 guard instanceof com.minecolonies.api.entity.citizen.AbstractEntityCitizen guardCitizen) {
 
             if (targetCitizen.getCitizenData() != null && guardCitizen.getCitizenData() != null) {
-                if (targetCitizen.getCitizenData().getColony() != null && guardCitizen.getCitizenData().getColony() != null) {
-                    return targetCitizen.getCitizenData().getColony().getID() == guardCitizen.getCitizenData().getColony().getID();
+                if (targetCitizen.getCitizenData().getColony() != null
+                        && guardCitizen.getCitizenData().getColony() != null) {
+                    return targetCitizen.getCitizenData().getColony().getID() == guardCitizen.getCitizenData()
+                            .getColony().getID();
                 }
             }
             return true;
         }
 
-        if (target instanceof net.minecraft.world.entity.player.Player) return true;
-        if (target.getTags().contains("cmoncol_dummy")) return true;
-        if (target.getTags().stream().anyMatch(tag -> tag.startsWith("guard_partner_"))) return true;
+        if (target instanceof net.minecraft.world.entity.player.Player)
+            return true;
+        if (target.getTags().contains("cmoncol_dummy"))
+            return true;
+        if (target.getTags().stream().anyMatch(tag -> tag.startsWith("guard_partner_")))
+            return true;
 
         return false;
     }
@@ -246,22 +276,29 @@ public class PokemonGuardAI extends AbstractEntityAIGuard<PokemonGuardJob, Pokem
         pokemon.goalSelector.addGoal(0, new Goal() {
             @Override
             public boolean canUse() {
-                if (!guard.isAlive()) return true;
+                if (!guard.isAlive())
+                    return true;
                 if (guard instanceof EntityCitizen citizen) {
-                    if (citizen.getCitizenData() == null || !(citizen.getCitizenData().getJob() instanceof PokemonGuardJob)) {
+                    if (citizen.getCitizenData() == null
+                            || !(citizen.getCitizenData().getJob() instanceof PokemonGuardJob)) {
                         return true;
                     }
                 }
                 return false;
             }
+
             @Override
-            public void start() { pokemon.discard(); }
+            public void start() {
+                pokemon.discard();
+            }
         });
 
         pokemon.goalSelector.addGoal(2, new Goal() {
             private int stuckTicks = 0;
 
-            { this.setFlags(EnumSet.of(Goal.Flag.MOVE)); }
+            {
+                this.setFlags(EnumSet.of(Goal.Flag.MOVE));
+            }
 
             @Override
             public boolean canUse() {
@@ -295,35 +332,59 @@ public class PokemonGuardAI extends AbstractEntityAIGuard<PokemonGuardJob, Pokem
         });
 
         pokemon.targetSelector.addGoal(1, new Goal() {
-            @Override public boolean canUse() {
+            @Override
+            public boolean canUse() {
                 LivingEntity target = guard.getLastHurtMob();
                 return target != null && target.isAlive() && !isFriendly(target, guard);
             }
-            @Override public void start() { pokemon.setTarget(guard.getLastHurtMob()); }
+
+            @Override
+            public void start() {
+                pokemon.setTarget(guard.getLastHurtMob());
+            }
         });
 
         pokemon.targetSelector.addGoal(2, new Goal() {
-            @Override public boolean canUse() {
+            @Override
+            public boolean canUse() {
                 LivingEntity attacker = guard.getLastHurtByMob();
                 return attacker != null && attacker.isAlive() && !isFriendly(attacker, guard);
             }
-            @Override public void start() { pokemon.setTarget(guard.getLastHurtByMob()); }
+
+            @Override
+            public void start() {
+                pokemon.setTarget(guard.getLastHurtByMob());
+            }
         });
 
         pokemon.targetSelector.addGoal(3, new Goal() {
-            @Override public boolean canUse() {
+            @Override
+            public boolean canUse() {
                 if (guard instanceof IThreatTableEntity threatEntity) {
                     LivingEntity target = threatEntity.getThreatTable().getTargetMob();
                     return target != null && target.isAlive() && !isFriendly(target, guard);
                 }
                 return false;
             }
-            @Override public void start() {
+
+            @Override
+            public void start() {
                 if (guard instanceof IThreatTableEntity threatEntity) {
                     pokemon.setTarget(threatEntity.getThreatTable().getTargetMob());
                 }
             }
         });
+        pokemon.targetSelector.addGoal(4, new net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal<>(
+                pokemon,
+                net.minecraft.world.entity.LivingEntity.class,
+                5,
+                true,
+                false,
+                target -> target instanceof net.minecraft.world.entity.monster.Enemy
+                        && !isFriendly(target, guard)
+                        && target.distanceToSqr(guard) < 256.0D
+                        && pokemon.distanceToSqr(guard) < 256.0D));
+
         String speciesName = pokemon.getPokemon().getSpecies().getName().toLowerCase();
         int attackCooldown = getCustomAttackDelay(speciesName);
         pokemon.goalSelector.addGoal(1, new GuardPokemonAttackGoal(pokemon, 1.2D, true, attackCooldown));
@@ -333,7 +394,8 @@ public class PokemonGuardAI extends AbstractEntityAIGuard<PokemonGuardJob, Pokem
 class GuardPokemonAttackGoal extends net.minecraft.world.entity.ai.goal.MeleeAttackGoal {
     private final int customCooldown;
 
-    public GuardPokemonAttackGoal(net.minecraft.world.entity.PathfinderMob mob, double speedModifier, boolean followTargetEvenIfNotSeen, int customCooldown) {
+    public GuardPokemonAttackGoal(net.minecraft.world.entity.PathfinderMob mob, double speedModifier,
+            boolean followTargetEvenIfNotSeen, int customCooldown) {
         super(mob, speedModifier, followTargetEvenIfNotSeen);
         this.customCooldown = customCooldown;
     }
@@ -355,31 +417,39 @@ class GuardPokemonAttackGoal extends net.minecraft.world.entity.ai.goal.MeleeAtt
                 switch (species) {
                     case "growlithe":
                     case "arcanine":
-                        target.hurt(pokemon.damageSources().mobAttack(pokemon), species.equals("arcanine") ? 15.0F : 10.0F);
+                        target.hurt(pokemon.damageSources().mobAttack(pokemon),
+                                species.equals("arcanine") ? 15.0F : 10.0F);
                         target.igniteForSeconds(5.0F);
-                        sl.sendParticles(ParticleTypes.FLAME, target.getX(), target.getY() + 1, target.getZ(), species.equals("arcanine") ? 30 : 15, 0.5D, 0.5D, 0.5D, 0.1D);
+                        sl.sendParticles(ParticleTypes.FLAME, target.getX(), target.getY() + 1, target.getZ(),
+                                species.equals("arcanine") ? 30 : 15, 0.5D, 0.5D, 0.5D, 0.1D);
                         break;
 
                     case "pikachu":
                     case "raichu":
                     case "magneton":
                     case "magnezone":
-                        target.hurt(pokemon.damageSources().magic(), (species.equals("raichu") || species.equals("magnezone")) ? 14.0F : 8.0F);
+                        target.hurt(pokemon.damageSources().magic(),
+                                (species.equals("raichu") || species.equals("magnezone")) ? 14.0F : 8.0F);
                         for (int y = 0; y < 5; y++) {
-                            sl.sendParticles(ParticleTypes.ELECTRIC_SPARK, target.getX(), target.getY() + y, target.getZ(), 10, 0.2, 0.5, 0.2, 0.1);
+                            sl.sendParticles(ParticleTypes.ELECTRIC_SPARK, target.getX(), target.getY() + y,
+                                    target.getZ(), 10, 0.2, 0.5, 0.2, 0.1);
                         }
                         break;
 
                     case "corphish":
                     case "crawdaunt":
-                        target.hurt(pokemon.damageSources().mobAttack(pokemon), species.equals("crawdaunt") ? 14.0F : 8.0F);
-                        sl.sendParticles(ParticleTypes.BUBBLE_POP, target.getX(), target.getY() + 1, target.getZ(), 20, 0.5D, 0.5D, 0.5D, 0.1D);
-                        sl.sendParticles(ParticleTypes.SPLASH, target.getX(), target.getY() + 1, target.getZ(), 20, 0.5D, 0.5D, 0.5D, 0.1D);
+                        target.hurt(pokemon.damageSources().mobAttack(pokemon),
+                                species.equals("crawdaunt") ? 14.0F : 8.0F);
+                        sl.sendParticles(ParticleTypes.BUBBLE_POP, target.getX(), target.getY() + 1, target.getZ(), 20,
+                                0.5D, 0.5D, 0.5D, 0.1D);
+                        sl.sendParticles(ParticleTypes.SPLASH, target.getX(), target.getY() + 1, target.getZ(), 20,
+                                0.5D, 0.5D, 0.5D, 0.1D);
                         break;
 
                     case "weepinbell":
                     case "victreebel":
-                        target.hurt(pokemon.damageSources().mobAttack(pokemon), species.equals("victreebel") ? 14.0F : 9.0F);
+                        target.hurt(pokemon.damageSources().mobAttack(pokemon),
+                                species.equals("victreebel") ? 14.0F : 9.0F);
                         target.addEffect(new MobEffectInstance(MobEffects.POISON, 100, 1));
 
                         net.minecraft.world.phys.Vec3 start = pokemon.position().add(0, 1.0, 0);
@@ -392,32 +462,43 @@ class GuardPokemonAttackGoal extends net.minecraft.world.entity.ai.goal.MeleeAtt
                             double pZ = start.z + dir.z * progress;
                             sl.sendParticles(ParticleTypes.ITEM_SLIME, pX, pY, pZ, 2, 0.1, 0.1, 0.1, 0.0);
                         }
-                        sl.sendParticles(ParticleTypes.ITEM_SLIME, target.getX(), target.getY() + 1, target.getZ(), 15, 0.5, 0.5, 0.5, 0.1);
+                        sl.sendParticles(ParticleTypes.ITEM_SLIME, target.getX(), target.getY() + 1, target.getZ(), 15,
+                                0.5, 0.5, 0.5, 0.1);
                         break;
 
                     case "scyther":
                     case "scizor":
-                        target.hurt(pokemon.damageSources().mobAttack(pokemon), species.equals("scizor") ? 16.0F : 12.0F);
-                        sl.sendParticles(ParticleTypes.SWEEP_ATTACK, target.getX(), target.getY() + 1, target.getZ(), 3, 0.5D, 0.5D, 0.5D, 0.0D);
+                        target.hurt(pokemon.damageSources().mobAttack(pokemon),
+                                species.equals("scizor") ? 16.0F : 12.0F);
+                        sl.sendParticles(ParticleTypes.SWEEP_ATTACK, target.getX(), target.getY() + 1, target.getZ(), 3,
+                                0.5D, 0.5D, 0.5D, 0.0D);
                         break;
 
                     case "croagunk":
                     case "toxicroak":
-                        target.hurt(pokemon.damageSources().mobAttack(pokemon), species.equals("toxicroak") ? 14.0F : 9.0F);
-                        target.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.POISON, 100, species.equals("toxicroak") ? 1 : 0));
-                        sl.sendParticles(ParticleTypes.WITCH, target.getX(), target.getY() + 1, target.getZ(), 25, 0.5D, 0.5D, 0.5D, 0.1D);
+                        target.hurt(pokemon.damageSources().mobAttack(pokemon),
+                                species.equals("toxicroak") ? 14.0F : 9.0F);
+                        target.addEffect(new net.minecraft.world.effect.MobEffectInstance(
+                                net.minecraft.world.effect.MobEffects.POISON, 100,
+                                species.equals("toxicroak") ? 1 : 0));
+                        sl.sendParticles(ParticleTypes.WITCH, target.getX(), target.getY() + 1, target.getZ(), 25, 0.5D,
+                                0.5D, 0.5D, 0.1D);
                         break;
 
                     case "sealeo":
                     case "walrein":
                         target.hurt(pokemon.damageSources().freeze(), species.equals("walrein") ? 15.0F : 10.0F);
                         target.setTicksFrozen(100);
-                        target.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN, 100, species.equals("walrein") ? 2 : 1));
-                        sl.sendParticles(ParticleTypes.SNOWFLAKE, target.getX(), target.getY() + 1, target.getZ(), 30, 0.5D, 0.5D, 0.5D, 0.05D);
+                        target.addEffect(new net.minecraft.world.effect.MobEffectInstance(
+                                net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN, 100,
+                                species.equals("walrein") ? 2 : 1));
+                        sl.sendParticles(ParticleTypes.SNOWFLAKE, target.getX(), target.getY() + 1, target.getZ(), 30,
+                                0.5D, 0.5D, 0.5D, 0.05D);
                         break;
 
                     case "stoutland":
-                        EvokerFangs fangs = new EvokerFangs(sl, target.getX(), target.getY(), target.getZ(), target.getYRot(), 0, pokemon);
+                        EvokerFangs fangs = new EvokerFangs(sl, target.getX(), target.getY(), target.getZ(),
+                                target.getYRot(), 0, pokemon);
                         sl.addFreshEntity(fangs);
                         break;
 
@@ -426,7 +507,9 @@ class GuardPokemonAttackGoal extends net.minecraft.world.entity.ai.goal.MeleeAtt
                         sl.getEntitiesOfClass(LivingEntity.class, aoeBox).forEach(victim -> {
                             if (victim != pokemon && victim != this.mob) {
                                 victim.hurt(victim.damageSources().fallingBlock(pokemon), 18.0F);
-                                sl.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.DRIPSTONE_BLOCK.defaultBlockState()),
+                                sl.sendParticles(
+                                        new BlockParticleOption(ParticleTypes.BLOCK,
+                                                Blocks.DRIPSTONE_BLOCK.defaultBlockState()),
                                         victim.getX(), victim.getY() + 2.0, victim.getZ(), 20, 0.5, 0.5, 0.5, 0.1);
                             }
                         });
@@ -434,7 +517,8 @@ class GuardPokemonAttackGoal extends net.minecraft.world.entity.ai.goal.MeleeAtt
 
                     default:
                         target.hurt(pokemon.damageSources().mobAttack(pokemon), 10.0F);
-                        sl.sendParticles(ParticleTypes.CRIT, target.getX(), target.getY() + 1, target.getZ(), 10, 0.5D, 0.5D, 0.5D, 0.1D);
+                        sl.sendParticles(ParticleTypes.CRIT, target.getX(), target.getY() + 1, target.getZ(), 10, 0.5D,
+                                0.5D, 0.5D, 0.1D);
                         break;
                 }
             }

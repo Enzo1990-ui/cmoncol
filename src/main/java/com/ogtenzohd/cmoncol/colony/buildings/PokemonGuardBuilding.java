@@ -4,7 +4,10 @@ import com.minecolonies.api.colony.IColony;
 import com.minecolonies.api.colony.IColonyView;
 import com.minecolonies.core.colony.buildings.AbstractBuildingGuards;
 import net.minecraft.core.BlockPos;
+import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 public class PokemonGuardBuilding extends AbstractBuildingGuards {
 
@@ -26,8 +29,25 @@ public class PokemonGuardBuilding extends AbstractBuildingGuards {
     }
 
     @Override
-    public int getClaimRadius(final int newLevel) {
-        return newLevel;
+    public List<IItemHandler> getHandlers() {
+        List<IItemHandler> handlers = super.getHandlers();
+        IItemHandler buildingInv = this.getItemHandlerCap();
+        if (buildingInv != null) {
+            handlers.add(buildingInv);
+        }
+        return handlers;
+    }
+
+    @Override
+    public int getClaimRadius(int newLevel) {
+        switch (newLevel) {
+            case 1: return 2;
+            case 2: return 3;
+            case 3: return 3;
+            case 4: return 4;
+            case 5: return 5;
+            default: return 0;
+        }
     }
 
     @Override

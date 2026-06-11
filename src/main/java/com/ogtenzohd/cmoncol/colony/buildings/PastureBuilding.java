@@ -36,10 +36,13 @@ public class PastureBuilding extends AbstractBuilding {
 
                     RancherRecipeManager.RancherRecipe recipe = RancherRecipeManager.getRecipe(species, slot.selectedRecipe);
 
-                    if (recipe != null && recipe.tool() != net.minecraft.world.item.Items.AIR) {
-                        boolean isDamageable = new ItemStack(recipe.tool()).isDamageableItem();
-                        int amount = isDamageable ? 1 : 2; 
-                        required.put(s -> s.is(recipe.tool()), new Tuple<>(amount, false));
+                    if (recipe != null && !recipe.tool().isEmpty()) {
+                        boolean isDamageable = false;
+                        if (recipe.tool().getItems().length > 0) {
+                            isDamageable = recipe.tool().getItems()[0].isDamageableItem();
+                        }
+                        int amount = isDamageable ? 1 : 2;
+                        required.put(s -> recipe.tool().test(s), new net.minecraft.util.Tuple<>(amount, false));
                     }
                 }
             }
